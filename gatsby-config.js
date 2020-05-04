@@ -1,14 +1,16 @@
+const siteTitle = "uhyo/blog"
+
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: siteTitle,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: "uhyo",
+      summary: "metcha yowai software engineer",
     },
-    description: `A starter blog demonstrating what Gatsby can do.`,
-    siteUrl: `https://gatsby-starter-blog-demo.netlify.com/`,
+    description: "うひょの技術ブログです。",
+    siteUrl: `https://blog.uhy.ooo/`,
     social: {
-      twitter: `kylemathews`,
+      twitter: `uhyo_`,
     },
   },
   plugins: [
@@ -53,14 +55,14 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
-        //trackingId: `ADD YOUR TRACKING ID HERE`,
+        trackingId: "UA-46093038-6",
       },
     },
     `gatsby-plugin-feed`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `Gatsby Starter Blog`,
+        name: siteTitle,
         short_name: `GatsbyJS`,
         start_url: `/`,
         background_color: `#ffffff`,
@@ -76,6 +78,7 @@ module.exports = {
         pathToConfigModule: `src/utils/typography`,
       },
     },
+    "gatsby-plugin-styled-components",
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

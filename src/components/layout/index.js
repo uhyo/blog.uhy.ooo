@@ -1,7 +1,28 @@
 import React from "react"
 import { Link } from "gatsby"
 
-import { rhythm, scale } from "../utils/typography"
+import { rhythm, scale } from "../../utils/typography"
+import styled from "styled-components"
+import { Header } from "./header"
+
+const LayoutStyle = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: ${rhythm(1)};
+  max-width: ${rhythm(24)};
+
+  background-color: white;
+
+  & > main {
+    margin: ${rhythm(1)};
+  }
+
+  & > footer {
+    margin: ${rhythm(2)} ${rhythm(1)} 0;
+    color: hsl(0, 0%, 0%, 0.5);
+    ${scale(-0.25)};
+  }
+`
 
 const Layout = ({ location, title, children }) => {
   const rootPath = `${__PATH_PREFIX__}/`
@@ -9,17 +30,11 @@ const Layout = ({ location, title, children }) => {
 
   if (location.pathname === rootPath) {
     header = (
-      <h1
-        style={{
-          ...scale(1.5),
-          marginBottom: rhythm(1.5),
-          marginTop: 0,
-        }}
-      >
+      <h1 style={scale(1.25)}>
         <Link
           style={{
-            boxShadow: `none`,
             color: `inherit`,
+            textDecoration: "none",
           }}
           to={`/`}
         >
@@ -48,22 +63,17 @@ const Layout = ({ location, title, children }) => {
     )
   }
   return (
-    <div
-      style={{
-        marginLeft: `auto`,
-        marginRight: `auto`,
-        maxWidth: rhythm(24),
-        padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
-      }}
-    >
-      <header>{header}</header>
+    <LayoutStyle>
+      <Header title={title} />
       <main>{children}</main>
       <footer>
         © {new Date().getFullYear()}, Built with
         {` `}
-        <a href="https://www.gatsbyjs.org">Gatsby</a>
+        <a rel="external" href="https://www.gatsbyjs.org">
+          Gatsby
+        </a>
       </footer>
-    </div>
+    </LayoutStyle>
   )
 }
 
