@@ -1,5 +1,4 @@
 import React from "react"
-import { Link } from "gatsby"
 
 import { rhythm, scale } from "../../utils/typography"
 import styled from "styled-components"
@@ -10,6 +9,7 @@ const LayoutStyle = styled.div`
   margin-right: auto;
   padding-bottom: ${rhythm(1)};
   max-width: ${rhythm(24)};
+  min-height: 100vh;
 
   background-color: white;
 
@@ -24,44 +24,7 @@ const LayoutStyle = styled.div`
   }
 `
 
-const Layout = ({ location, title, children }) => {
-  const rootPath = `${__PATH_PREFIX__}/`
-  let header
-
-  if (location.pathname === rootPath) {
-    header = (
-      <h1 style={scale(1.25)}>
-        <Link
-          style={{
-            color: `inherit`,
-            textDecoration: "none",
-          }}
-          to={`/`}
-        >
-          {title}
-        </Link>
-      </h1>
-    )
-  } else {
-    header = (
-      <h3
-        style={{
-          fontFamily: `Montserrat, sans-serif`,
-          marginTop: 0,
-        }}
-      >
-        <Link
-          style={{
-            boxShadow: `none`,
-            color: `inherit`,
-          }}
-          to={`/`}
-        >
-          {title}
-        </Link>
-      </h3>
-    )
-  }
+const Layout = ({ title, children }) => {
   return (
     <LayoutStyle>
       <Header title={title} />

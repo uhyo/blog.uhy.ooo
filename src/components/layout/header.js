@@ -23,9 +23,9 @@ const HeaderInner = ({ title, className }) => {
 }
 
 export const Header = styled(HeaderInner)`
-  background-color: ${mainColor.light};
-  color: ${mainColor.dark};
-  padding: ${rhythm(1)} ${rhythm(3 / 4)};
+  background-color: ${mainColor.normal};
+  color: #ffffff;
+  padding: ${rhythm(0.5)} ${rhythm(3 / 4)};
 
   & > h1 {
     font-family: "Source Code Pro";
