@@ -4,7 +4,24 @@ import styled from "styled-components"
 import { mainColor, grayColor } from "../../utils/color"
 import { rhythm } from "../../utils/typography"
 
-const ArticleListItemInner = ({ className, fields, frontmatter, excerpt }) => {
+type Props = {
+  className: string
+  fields: {
+    slug: string
+  }
+  frontmatter: {
+    title: string
+    date: string
+  }
+  excerpt: string
+}
+
+const ArticleListItemInner: React.FC<Props> = ({
+  className,
+  fields,
+  frontmatter,
+  excerpt,
+}) => {
   const title = frontmatter.title || fields.slug
   return (
     <article className={className}>

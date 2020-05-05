@@ -4,7 +4,12 @@ import styled from "styled-components"
 import { mainColor } from "../../utils/color"
 import { rhythm, scale } from "../../utils/typography"
 
-const HeaderInner = ({ title, className }) => {
+type Props = {
+  className?: string
+  title: string
+}
+
+const HeaderInner: React.FC<Props> = ({ title, className }) => {
   return (
     <header className={className}>
       <h1>
@@ -30,6 +35,6 @@ export const Header = styled(HeaderInner)`
   & > h1 {
     font-family: "Source Code Pro";
     margin: 0;
-    ${scale(1)};
+    ${String(scale(1))};
   }
 `

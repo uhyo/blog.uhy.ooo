@@ -20,11 +20,14 @@ const LayoutStyle = styled.div`
   & > footer {
     margin: ${rhythm(2)} ${rhythm(1)} 0;
     color: hsl(0, 0%, 0%, 0.5);
-    ${scale(-0.25)};
+    ${String(scale(-0.25))};
   }
 `
 
-const Layout = ({ title, children }) => {
+type Props = {
+  title: string
+}
+const Layout: React.FC<Props> = ({ title, children }) => {
   return (
     <LayoutStyle>
       <Header title={title} />
