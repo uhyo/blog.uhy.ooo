@@ -14,4 +14,7 @@ export type MarkdownRemark<FrontmatterKeys extends keyof Frontmatter> = {
   excerpt: string
   html: string
   frontmatter: Pick<Frontmatter, FrontmatterKeys>
+  fields: {
+    slug: string
+  }
 }

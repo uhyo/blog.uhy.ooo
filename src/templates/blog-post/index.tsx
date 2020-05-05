@@ -2,7 +2,7 @@ import { graphql, Link } from "gatsby"
 import React from "react"
 import Layout from "../../components/layout"
 import SEO from "../../components/seo"
-import { Frontmatter, MarkdownRemark } from "../../types/article"
+import { MarkdownRemark } from "../../types/article"
 import { SiteMetadata } from "../../types/siteMetadata"
 import { Article } from "./Article"
 
@@ -14,18 +14,8 @@ type Props = {
     markdownRemark: MarkdownRemark<"title" | "date">
   }
   pageContext: {
-    previous: {
-      fields: {
-        slug: string
-      }
-      frontmatter: Pick<Frontmatter, "title">
-    }
-    next: {
-      fields: {
-        slug: string
-      }
-      frontmatter: Pick<Frontmatter, "title">
-    }
+    previous: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
+    next: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
   }
 }
 

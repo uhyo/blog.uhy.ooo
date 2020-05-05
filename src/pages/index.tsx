@@ -4,26 +4,20 @@ import { ArticleListItem } from "../components/ArticleListItem"
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
+import { MarkdownRemark } from "../types/article"
+import { SiteMetadata } from "../types/siteMetadata"
 
 type Props = {
   data: {
     site: {
-      siteMetadata: {
-        title: string
-      }
+      siteMetadata: Pick<SiteMetadata, "title">
     }
     allMarkdownRemark: {
       edges: Array<{
-        node: {
-          fields: {
-            slug: string
-          }
-          frontmatter: {
-            date: string
-            title: string
-          }
-          excerpt: string
-        }
+        node: Pick<
+          MarkdownRemark<"date" | "title">,
+          "fields" | "frontmatter" | "excerpt"
+        >
       }>
     }
   }

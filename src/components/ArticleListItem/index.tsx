@@ -1,18 +1,13 @@
 import { Link } from "gatsby"
 import React from "react"
 import styled from "styled-components"
-import { mainColor, grayColor } from "../../utils/color"
+import { MarkdownRemark } from "../../types/article"
+import { grayColor, mainColor } from "../../utils/color"
 import { rhythm } from "../../utils/typography"
-import { Frontmatter } from "../../types/article"
 
 type Props = {
   className?: string
-  fields: {
-    slug: string
-  }
-  frontmatter: Pick<Frontmatter, "title" | "date">
-  excerpt: string
-}
+} & Pick<MarkdownRemark<"title" | "date">, "fields" | "frontmatter" | "excerpt">
 
 const ArticleListItemInner: React.FC<Props> = ({
   className,
