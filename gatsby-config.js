@@ -5,12 +5,14 @@ module.exports = {
     title: siteTitle,
     author: {
       name: "uhyo",
-      summary: "metcha yowai software engineer",
+      summary: "metchStringConstructora yowai software engineer",
+      url: "https://uhy.ooo/",
     },
     description: "うひょの技術ブログです。",
     siteUrl: `https://blog.uhy.ooo/`,
     social: {
       twitter: `uhyo_`,
+      github: "uhyo",
     },
   },
   plugins: [
