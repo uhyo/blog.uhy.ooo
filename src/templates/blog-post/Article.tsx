@@ -1,15 +1,10 @@
 import React from "react"
 import Bio from "../../components/bio"
+import { MarkdownRemark } from "../../types/article"
 import { rhythm, scale } from "../../utils/typography"
 
 type Props = {
-  post: {
-    frontmatter: {
-      title: string
-      date: string
-    }
-    html: string
-  }
+  post: Pick<MarkdownRemark<"title" | "date">, "frontmatter" | "html">
 }
 
 export const Article: React.FC<Props> = ({ post }) => {

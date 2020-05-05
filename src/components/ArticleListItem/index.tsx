@@ -3,16 +3,14 @@ import React from "react"
 import styled from "styled-components"
 import { mainColor, grayColor } from "../../utils/color"
 import { rhythm } from "../../utils/typography"
+import { Frontmatter } from "../../types/article"
 
 type Props = {
   className?: string
   fields: {
     slug: string
   }
-  frontmatter: {
-    title: string
-    date: string
-  }
+  frontmatter: Pick<Frontmatter, "title" | "date">
   excerpt: string
 }
 

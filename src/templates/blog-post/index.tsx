@@ -2,23 +2,29 @@ import { graphql, Link } from "gatsby"
 import React from "react"
 import Layout from "../../components/layout"
 import SEO from "../../components/seo"
+import { Frontmatter, MarkdownRemark } from "../../types/article"
+import { SiteMetadata } from "../../types/siteMetadata"
 import { Article } from "./Article"
 
 type Props = {
-  date: {
+  data: {
     site: {
-      siteMetadata: {
-        title: string
-      }
+      siteMetadata: Pick<SiteMetadata, "title">
     }
-    markdownRemark: {
-      id: string
-      excerpt: string
-      html: string
-      frontmatter: {
-        title: string
-        date: string
+    markdownRemark: MarkdownRemark<"title" | "date">
+  }
+  pageContext: {
+    previous: {
+      fields: {
+        slug: string
       }
+      frontmatter: Pick<Frontmatter, "title">
+    }
+    next: {
+      fields: {
+        slug: string
+      }
+      frontmatter: Pick<Frontmatter, "title">
     }
   }
 }
@@ -30,10 +36,7 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
 
   return (
     <Layout title={siteTitle}>
-      <SEO
-        title={post.frontmatter.title}
-        description={post.frontmatter.description || post.excerpt}
-      />
+      <SEO title={post.frontmatter.title} description={post.excerpt} />
       <Article post={post} />
       <nav>
         <ul
