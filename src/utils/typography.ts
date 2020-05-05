@@ -1,5 +1,5 @@
 import Typography from "typography"
-import { grayColor } from "./color"
+import { grayColor, mainColor } from "./color"
 
 // Wordpress2016.overrideThemeStyles = () => {
 //   return {
@@ -14,11 +14,16 @@ import { grayColor } from "./color"
 const theme = {
   baseFontSize: "16px",
   baseLineHeight: 1.75,
-  scaleRatio: 5 / 2,
+  scaleRatio: 2,
   headerFontFamily: ["sans-serif"],
   bodyFontFamily: ["sans-serif"],
+  headerColor: mainColor.dark,
   bodyColor: "hsl(0,0%,0%,0.8)",
-  overrideStyles: ({ adjustFontSizeTo, rhythm }) => ({
+  overrideStyles: (
+    {
+      /*adjustFontSizeTo, rhythm*/
+    }
+  ) => ({
     body: {
       backgroundColor: grayColor.lightest,
     },
@@ -34,4 +39,7 @@ if (process.env.NODE_ENV !== `production`) {
 
 export default typography
 export const rhythm = typography.rhythm
-export const scale = typography.scale
+// Workaround for type/interface difference
+export const scale = typography.scale as (
+  value: number
+) => { fontSize: string; lineHeight: string }

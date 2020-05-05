@@ -29,12 +29,12 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
 
 export const Header = styled(HeaderInner)`
   background-color: ${mainColor.normal};
-  color: #ffffff;
   padding: ${rhythm(0.5)} ${rhythm(3 / 4)};
 
   & > h1 {
     font-family: "Source Code Pro";
+    color: #ffffff;
     margin: 0;
-    ${String(scale(1))};
+    ${scale(1)}
   }
 `
