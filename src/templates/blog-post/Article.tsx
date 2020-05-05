@@ -1,10 +1,9 @@
 import React from "react"
-import Bio from "../../components/bio"
-import { MarkdownRemark } from "../../types/article"
-import { rhythm, scale } from "../../utils/typography"
 import styled from "styled-components"
-import { grayColor } from "../../utils/color"
 import { ArticleDate } from "../../components/ArticleDate"
+import { MarkdownRemark } from "../../types/article"
+import { grayColor } from "../../utils/color"
+import { rhythm, scale } from "../../utils/typography"
 
 type Props = {
   className?: string
@@ -23,11 +22,9 @@ const ArticleInner: React.FC<Props> = ({ className, post }) => {
           <ArticleDate {...post.frontmatter} />
         </p>
       </header>
-      <section dangerouslySetInnerHTML={{ __html: post.html }} />
+      <main dangerouslySetInnerHTML={{ __html: post.html }} />
       <hr />
-      <footer>
-        <Bio />
-      </footer>
+      <footer></footer>
     </article>
   )
 }
