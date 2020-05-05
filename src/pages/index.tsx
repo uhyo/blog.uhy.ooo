@@ -5,12 +5,36 @@ import Bio from "../components/bio"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 
-const BlogIndex = ({ data, location }) => {
+type Props = {
+  data: {
+    site: {
+      siteMetadata: {
+        title: string
+      }
+    }
+    allMarkdownRemark: {
+      edges: Array<{
+        node: {
+          fields: {
+            slug: string
+          }
+          frontmatter: {
+            date: string
+            title: string
+          }
+          excerpt: string
+        }
+      }>
+    }
+  }
+}
+
+const BlogIndex: React.FC<Props> = ({ data }) => {
   const siteTitle = data.site.siteMetadata.title
   const posts = data.allMarkdownRemark.edges
 
   return (
-    <Layout location={location} title={siteTitle}>
+    <Layout title={siteTitle}>
       <SEO title="" />
       <Bio />
       {posts.map(({ node }) => {

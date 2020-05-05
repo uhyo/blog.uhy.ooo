@@ -5,7 +5,7 @@ import { mainColor, grayColor } from "../../utils/color"
 import { rhythm } from "../../utils/typography"
 
 type Props = {
-  className: string
+  className?: string
   fields: {
     slug: string
   }
