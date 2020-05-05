@@ -3,7 +3,14 @@
  */
 export type Frontmatter = {
   title: string
-  date: string
+  /**
+   * Publish date
+   */
+  published: string
+  /**
+   * Updated date
+   */
+  updated?: string
 }
 
 /**

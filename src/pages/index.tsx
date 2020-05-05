@@ -15,7 +15,7 @@ type Props = {
     allMarkdownRemark: {
       edges: Array<{
         node: Pick<
-          MarkdownRemark<"date" | "title">,
+          MarkdownRemark<"published" | "updated" | "title">,
           "fields" | "frontmatter" | "excerpt"
         >
       }>
@@ -47,7 +47,9 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+    allMarkdownRemark(
+      sort: { fields: [frontmatter___published], order: DESC }
+    ) {
       edges {
         node {
           excerpt
@@ -55,7 +57,8 @@ export const pageQuery = graphql`
             slug
           }
           frontmatter {
-            date(formatString: "MMMM DD, YYYY")
+            published(formatString: "LL", locale: "ja")
+            updated(formatString: "LL", locale: "ja")
             title
           }
         }

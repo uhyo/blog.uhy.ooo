@@ -4,10 +4,14 @@ import { MarkdownRemark } from "../../types/article"
 import { rhythm, scale } from "../../utils/typography"
 import styled from "styled-components"
 import { grayColor } from "../../utils/color"
+import { ArticleDate } from "../../components/ArticleDate"
 
 type Props = {
   className?: string
-  post: Pick<MarkdownRemark<"title" | "date">, "frontmatter" | "html">
+  post: Pick<
+    MarkdownRemark<"title" | "published" | "updated">,
+    "frontmatter" | "html"
+  >
 }
 
 const ArticleInner: React.FC<Props> = ({ className, post }) => {
@@ -15,7 +19,9 @@ const ArticleInner: React.FC<Props> = ({ className, post }) => {
     <article className={className}>
       <header>
         <h1>{post.frontmatter.title}</h1>
-        <p>{post.frontmatter.date}</p>
+        <p>
+          <ArticleDate {...post.frontmatter} />
+        </p>
       </header>
       <section dangerouslySetInnerHTML={{ __html: post.html }} />
       <hr />
@@ -28,14 +34,14 @@ const ArticleInner: React.FC<Props> = ({ className, post }) => {
 
 export const Article = styled(ArticleInner)`
   & > header > h1 {
-    margin-top: ${rhythm(1)};
-    margin-bottom: 0;
+    margin: ${rhythm(1)} 0 ${rhythm(0.25)};
   }
+
   & > header > p {
     display: block;
-    margin-bottom: ${rhythm(1)};
-    ${String(scale(1.5))};
-    color: ${grayColor.dark};
+    ${scale(-0.25)};
+    margin-bottom: ${rhythm(0.5)};
+    color: ${grayColor.darker};
   }
 
   & > hr {

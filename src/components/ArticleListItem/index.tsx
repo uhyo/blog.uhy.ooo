@@ -2,12 +2,16 @@ import { Link } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { MarkdownRemark } from "../../types/article"
-import { grayColor, mainColor } from "../../utils/color"
+import { grayColor } from "../../utils/color"
 import { rhythm } from "../../utils/typography"
+import { ArticleDate } from "../ArticleDate"
 
 type Props = {
   className?: string
-} & Pick<MarkdownRemark<"title" | "date">, "fields" | "frontmatter" | "excerpt">
+} & Pick<
+  MarkdownRemark<"title" | "published" | "updated">,
+  "fields" | "frontmatter" | "excerpt"
+>
 
 const ArticleListItemInner: React.FC<Props> = ({
   className,
@@ -23,7 +27,9 @@ const ArticleListItemInner: React.FC<Props> = ({
           <Link to={fields.slug}>{title}</Link>
         </h3>
         <div>
-          <small>{frontmatter.date}</small>
+          <small>
+            <ArticleDate {...frontmatter} />
+          </small>
         </div>
       </header>
       <section>
@@ -41,6 +47,6 @@ export const ArticleListItem = styled(ArticleListItemInner)`
     text-decoration: none;
   }
   & > header small {
-    color: ${grayColor.dark};
+    color: ${grayColor.darker};
   }
 `

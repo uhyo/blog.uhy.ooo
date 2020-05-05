@@ -11,7 +11,7 @@ type Props = {
     site: {
       siteMetadata: Pick<SiteMetadata, "title">
     }
-    markdownRemark: MarkdownRemark<"title" | "date">
+    markdownRemark: MarkdownRemark<"title" | "published" | "updated">
   }
   pageContext: {
     previous: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
@@ -73,7 +73,8 @@ export const pageQuery = graphql`
       html
       frontmatter {
         title
-        date(formatString: "MMMM DD, YYYY")
+        published(formatString: "LL", locale: "ja")
+        updated(formatString: "LL", locale: "ja")
       }
     }
   }
