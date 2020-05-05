@@ -8,6 +8,7 @@
 import React from "react"
 import Helmet from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
+import { SiteMetadata } from "../types/siteMetadata"
 
 type Props = {
   description?: string
@@ -17,12 +18,16 @@ type Props = {
 }
 
 const SEO: React.FC<Props> = ({
-  description = "",
-  lang = "en",
+  description,
+  lang = "ja",
   meta = [],
   title,
 }) => {
-  const { site } = useStaticQuery(
+  const { site } = useStaticQuery<{
+    site: {
+      siteMetadata: Pick<SiteMetadata, "title" | "description" | "social">
+    }
+  }>(
     graphql`
       query {
         site {
