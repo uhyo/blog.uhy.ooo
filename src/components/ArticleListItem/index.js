@@ -17,11 +17,7 @@ const ArticleListItemInner = ({ className, fields, frontmatter, excerpt }) => {
         </div>
       </header>
       <section>
-        <p
-          dangerouslySetInnerHTML={{
-            __html: frontmatter.description || excerpt,
-          }}
-        />
+        <p>{excerpt}</p>
       </section>
     </article>
   )
