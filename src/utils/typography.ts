@@ -1,5 +1,5 @@
 import Typography from "typography"
-import { grayColor, mainColor } from "./color"
+import { grayColor, mainColor, subColor } from "./color"
 
 // Wordpress2016.overrideThemeStyles = () => {
 //   return {
@@ -26,6 +26,12 @@ const theme = {
   ) => ({
     body: {
       backgroundColor: grayColor.lightest,
+    },
+    a: {
+      color: mainColor.normal,
+    },
+    "a:visited": {
+      color: subColor.normal,
     },
   }),
 }

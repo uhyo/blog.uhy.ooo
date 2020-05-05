@@ -38,7 +38,6 @@ export const ArticleListItem = styled(ArticleListItemInner)`
     margin-bottom: ${rhythm(0.25)};
   }
   & > header a {
-    color: ${mainColor.normal};
     text-decoration: none;
   }
   & > header small {

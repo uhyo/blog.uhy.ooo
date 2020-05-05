@@ -8,6 +8,15 @@ export const mainColor = {
 }
 
 /**
+ * sub color
+ */
+export const subColor = {
+  light: "#efb1ff",
+  normal: "#7f78d2",
+  dark: "#481380",
+}
+
+/**
  * Gray color
  */
 export const grayColor = {
