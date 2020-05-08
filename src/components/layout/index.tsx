@@ -15,10 +15,11 @@ const LayoutStyle = styled.div`
     "left main   right"
     "left footer right";
   grid-template-rows: max-content max-content auto;
-  grid-template-columns: 0 ${rhythm(mainAreaWidth)} 0;
-  width: ${rhythm(mainAreaWidth)};
+  grid-template-columns: 0 100% 0;
+  max-width: ${rhythm(mainAreaWidth)};
   @media (min-width: ${rhythm(mainAreaWidth + sideBarWidth)}) {
     grid-template-columns: auto ${rhythm(mainAreaWidth)} ${rhythm(sideBarWidth)};
+    max-width: none;
     width: 100%;
   }
   @media (min-width: ${rhythm(mainAreaWidth + sideBarWidth * 2)}) {
@@ -45,6 +46,10 @@ const LayoutStyle = styled.div`
 
   & > div:nth-of-type(2) {
     grid-area: right;
+
+    @media (max-width: ${rhythm(mainAreaWidth + sideBarWidth)}) {
+      display: none;
+    }
   }
 
   & > footer {
