@@ -5,7 +5,7 @@ module.exports = {
     title: siteTitle,
     author: {
       name: "uhyo",
-      summary: "metchStringConstructora yowai software engineer",
+      summary: "metcha yowai software engineer",
       url: "https://uhy.ooo/",
     },
     description: "うひょの技術ブログです。",
@@ -124,10 +124,10 @@ module.exports = {
       resolve: `gatsby-plugin-manifest`,
       options: {
         name: siteTitle,
-        short_name: `GatsbyJS`,
+        short_name: siteTitle,
         start_url: `/`,
         background_color: `#ffffff`,
-        theme_color: `#663399`,
+        theme_color: `#2c91ec`,
         display: `minimal-ui`,
         icon: `content/assets/gatsby-icon.png`,
       },

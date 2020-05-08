@@ -28,9 +28,8 @@ const BlogIndex: React.FC<Props> = ({ data }) => {
   const posts = data.allMarkdownRemark.edges
 
   return (
-    <Layout title={siteTitle}>
+    <Layout title={siteTitle} rightSide={<Bio />}>
       <SEO title="" />
-      <Bio />
       {posts.map(({ node }) => {
         return <ArticleListItem key={node.fields.slug} {...node} />
       })}
