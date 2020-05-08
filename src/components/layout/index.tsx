@@ -3,6 +3,7 @@ import React from "react"
 import { rhythm, scale } from "../../utils/typography"
 import styled from "styled-components"
 import { Header } from "./header"
+import { Ad } from "./ad"
 
 const mainAreaWidth = 24
 const sideBarWidth = 8
@@ -66,7 +67,10 @@ const Layout: React.FC<Props> = ({ title, rightSide, children }) => {
         <Header title={title} />
       </div>
       <main>{children}</main>
-      <div>{rightSide}</div>
+      <div>
+        <Ad />
+        {rightSide}
+      </div>
       <footer>
         © {new Date().getFullYear()}, Built with
         {` `}
