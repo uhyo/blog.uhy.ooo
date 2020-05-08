@@ -38,6 +38,9 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
         <Link to="/">{title}</Link>
       </h1>
       <nav>
+        <a href="/rss.xml" aria-label="RSSフィード">
+          <FontAwesomeIcon icon="rss" />
+        </a>
         <a
           href={author.url}
           target="_blank"
