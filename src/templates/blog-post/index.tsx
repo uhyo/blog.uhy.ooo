@@ -5,6 +5,7 @@ import SEO from "../../components/seo"
 import { MarkdownRemark } from "../../types/article"
 import { SiteMetadata } from "../../types/siteMetadata"
 import { Article } from "./Article"
+import { TOC } from "./TOC"
 
 type Props = {
   data: {
@@ -25,7 +26,10 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
   const { previous, next } = pageContext
 
   return (
-    <Layout title={siteTitle}>
+    <Layout
+      title={siteTitle}
+      rightSide={<TOC tableOfContents={post.tableOfContents} />}
+    >
       <SEO title={post.frontmatter.title} description={post.excerpt} />
       <Article post={post} />
       <nav>
@@ -71,6 +75,7 @@ export const pageQuery = graphql`
       id
       excerpt(pruneLength: 160)
       html
+      tableOfContents
       frontmatter {
         title
         published(formatString: "LL", locale: "ja")

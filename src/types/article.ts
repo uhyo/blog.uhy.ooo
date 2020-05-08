@@ -20,6 +20,7 @@ export type MarkdownRemark<FrontmatterKeys extends keyof Frontmatter> = {
   id: string
   excerpt: string
   html: string
+  tableOfContents: string
   frontmatter: Pick<Frontmatter, FrontmatterKeys>
   fields: {
     slug: string
