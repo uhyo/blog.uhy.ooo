@@ -6,6 +6,7 @@ import { rhythm, scale } from "../../utils/typography"
 import { Ad } from "./ad"
 import { Header } from "./header"
 import { mainAreaWidth, sideBarWidth } from "./width"
+import { ShareButtons } from "./share"
 
 const LayoutStyle = styled.div`
   display: grid;
@@ -68,11 +69,13 @@ const LayoutStyle = styled.div`
 
 type Props = {
   rightSide?: JSX.Element
+  title?: string
+  slug?: string
 }
-const Layout: React.FC<Props> = ({ rightSide, children }) => {
+const Layout: React.FC<Props> = ({ rightSide, title, slug, children }) => {
   const { site } = useStaticQuery<{
     site: {
-      siteMetadata: Pick<SiteMetadata, "title">
+      siteMetadata: Pick<SiteMetadata, "title" | "siteUrl">
     }
   }>(
     graphql`
@@ -80,11 +83,18 @@ const Layout: React.FC<Props> = ({ rightSide, children }) => {
         site {
           siteMetadata {
             title
+            siteUrl
           }
         }
       }
     `
   )
+
+  const pageTitle = title
+    ? `${title} - ${site.siteMetadata.title}`
+    : site.siteMetadata.title
+  const pageUrl = site.siteMetadata.siteUrl.replace(/\/$/, "") + slug
+
   return (
     <LayoutStyle>
       <div>
@@ -96,6 +106,10 @@ const Layout: React.FC<Props> = ({ rightSide, children }) => {
         {rightSide}
       </div>
       <footer>
+        {title !== undefined && slug !== undefined && (
+          <ShareButtons text={pageTitle} url={pageUrl} />
+        )}
+        <div></div>
         <aside>
           <Ad />
         </aside>

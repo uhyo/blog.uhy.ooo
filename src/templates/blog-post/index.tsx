@@ -12,6 +12,7 @@ type Props = {
     markdownRemark: MarkdownRemark<"title" | "published" | "updated" | "tags">
   }
   pageContext: {
+    slug: string
     previous?: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
     next?: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
   }
@@ -19,10 +20,14 @@ type Props = {
 
 const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
   const post = data.markdownRemark
-  const { previous, next } = pageContext
+  const { slug, previous, next } = pageContext
 
   return (
-    <Layout rightSide={<TOC tableOfContents={post.tableOfContents} />}>
+    <Layout
+      title={post.frontmatter.title}
+      slug={slug}
+      rightSide={<TOC tableOfContents={post.tableOfContents} />}
+    >
       <SEO title={post.frontmatter.title} description={post.excerpt} />
       <Article post={post} />
       <Nav previous={previous} next={next} />

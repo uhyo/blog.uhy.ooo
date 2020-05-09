@@ -21,17 +21,19 @@ type Props = {
   }
   pageContext: {
     tag: string
+    slug: string
   }
 }
 
 const TagPageTemplate: React.FC<Props> = ({ data, pageContext }) => {
   const tagDescHtml = data.markdownRemark?.html
   const posts = data.allMarkdownRemark.edges
-  const { tag } = pageContext
+  const { tag, slug } = pageContext
 
+  const title = `タグ: ${tag}`
   return (
-    <Layout>
-      <SEO title={`タグ: ${tag}`} />
+    <Layout title={title} slug={slug}>
+      <SEO title={title} />
       <h1>
         <FontAwesomeIcon icon="tags" aria-label="タグ" />
         {tag}
