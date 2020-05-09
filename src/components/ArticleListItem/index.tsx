@@ -7,12 +7,14 @@ import { rhythm } from "../../utils/typography"
 import { ArticleDate } from "../ArticleDate"
 import { Tags } from "../Tags"
 
-type Props = {
-  className?: string
-} & Pick<
+export type ArticleListItemData = Pick<
   MarkdownRemark<"title" | "published" | "updated" | "tags">,
   "fields" | "frontmatter" | "excerpt"
 >
+
+type Props = {
+  className?: string
+} & ArticleListItemData
 
 const ArticleListItemInner: React.FC<Props> = ({
   className,
