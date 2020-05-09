@@ -54,10 +54,10 @@ const LayoutStyle = styled.div`
 
   & > footer {
     grid-area: footer;
-    padding: ${rhythm(2)} ${rhythm(1)} ${rhythm(1)};
+    padding: ${rhythm(1)} ${rhythm(1)} ${rhythm(1)};
     background-color: white;
     color: hsl(0, 0%, 0%, 0.5);
-    ${String(scale(-0.25))};
+    ${scale(-0.25)};
   }
 `
 

@@ -6,6 +6,7 @@ import { MarkdownRemark } from "../../types/article"
 import { SiteMetadata } from "../../types/siteMetadata"
 import { Article } from "./Article"
 import { TOC } from "./TOC"
+import { Nav } from "./Nav"
 
 type Props = {
   data: {
@@ -15,8 +16,8 @@ type Props = {
     markdownRemark: MarkdownRemark<"title" | "published" | "updated">
   }
   pageContext: {
-    previous: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
-    next: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
+    previous?: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
+    next?: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
   }
 }
 
@@ -32,32 +33,7 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
     >
       <SEO title={post.frontmatter.title} description={post.excerpt} />
       <Article post={post} />
-      <nav>
-        <ul
-          style={{
-            display: `flex`,
-            flexWrap: `wrap`,
-            justifyContent: `space-between`,
-            listStyle: `none`,
-            padding: 0,
-          }}
-        >
-          <li>
-            {previous && (
-              <Link to={previous.fields.slug} rel="prev">
-                ← {previous.frontmatter.title}
-              </Link>
-            )}
-          </li>
-          <li>
-            {next && (
-              <Link to={next.fields.slug} rel="next">
-                {next.frontmatter.title} →
-              </Link>
-            )}
-          </li>
-        </ul>
-      </nav>
+      <Nav previous={previous} next={next} />
     </Layout>
   )
 }
