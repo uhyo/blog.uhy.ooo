@@ -2,6 +2,9 @@
 title: New Beginnings
 published: "2015-05-28T22:40:32.169Z"
 updated: "2016-06-01"
+tags:
+  - JavaScript
+  - 雑
 ---
 
 Far far away, behind the word mountains, far from the countries Vokalia and

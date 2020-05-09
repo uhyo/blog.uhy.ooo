@@ -11,6 +11,10 @@ export type Frontmatter = {
    * Updated date
    */
   updated?: string
+  /**
+   * Tags
+   */
+  tags?: string[]
 }
 
 /**

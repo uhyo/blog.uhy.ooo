@@ -13,7 +13,7 @@ type Props = {
     site: {
       siteMetadata: Pick<SiteMetadata, "title">
     }
-    markdownRemark: MarkdownRemark<"title" | "published" | "updated">
+    markdownRemark: MarkdownRemark<"title" | "published" | "updated" | "tags">
   }
   pageContext: {
     previous?: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
@@ -56,6 +56,7 @@ export const pageQuery = graphql`
         title
         published(formatString: "LL", locale: "ja")
         updated(formatString: "LL", locale: "ja")
+        tags
       }
     }
   }
