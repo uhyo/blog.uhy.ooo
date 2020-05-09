@@ -14,7 +14,7 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
   const { tag } = pageContext
 
   return (
-    <Layout title={tag}>
+    <Layout>
       <SEO title={tag} />
       <p>たぐ！！！ {tag}</p>
     </Layout>
@@ -23,26 +23,17 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
 
 export default BlogPostTemplate
 
-/*
 export const pageQuery = graphql`
-  query BlogPostBySlug($slug: String!) {
-    site {
-      siteMetadata {
-        title
-      }
-    }
-    markdownRemark(fields: { slug: { eq: $slug } }) {
-      id
-      excerpt(pruneLength: 160)
-      html
-      tableOfContents
-      frontmatter {
-        title
-        published(formatString: "LL", locale: "ja")
-        updated(formatString: "LL", locale: "ja")
-        tags
+  query($tag: String) {
+    allMarkdownRemark(
+      sort: { fields: [frontmatter___published], order: DESC }
+      filter: { frontmatter: { tags: { in: [$tag] } } }
+    ) {
+      edges {
+        node {
+          ...ArticleInList
+        }
       }
     }
   }
 `
-*/

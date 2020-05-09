@@ -1,4 +1,4 @@
-import { Link } from "gatsby"
+import { Link, graphql } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { MarkdownRemark } from "../../types/article"
@@ -60,6 +60,21 @@ export const ArticleListItem = styled(ArticleListItemInner)`
 
     & > div {
       margin-left: ${rhythm(0.25)};
+    }
+  }
+`
+
+export const query = graphql`
+  fragment ArticleInList on MarkdownRemark {
+    excerpt
+    fields {
+      slug
+    }
+    frontmatter {
+      published(formatString: "LL", locale: "ja")
+      updated(formatString: "LL", locale: "ja")
+      title
+      tags
     }
   }
 `

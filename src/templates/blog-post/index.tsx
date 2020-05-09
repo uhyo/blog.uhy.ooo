@@ -10,9 +10,6 @@ import { TOC } from "./TOC"
 
 type Props = {
   data: {
-    site: {
-      siteMetadata: Pick<SiteMetadata, "title">
-    }
     markdownRemark: MarkdownRemark<"title" | "published" | "updated" | "tags">
   }
   pageContext: {
@@ -23,14 +20,10 @@ type Props = {
 
 const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
   const post = data.markdownRemark
-  const siteTitle = data.site.siteMetadata.title
   const { previous, next } = pageContext
 
   return (
-    <Layout
-      title={siteTitle}
-      rightSide={<TOC tableOfContents={post.tableOfContents} />}
-    >
+    <Layout rightSide={<TOC tableOfContents={post.tableOfContents} />}>
       <SEO title={post.frontmatter.title} description={post.excerpt} />
       <Article post={post} />
       <Nav previous={previous} next={next} />
@@ -42,11 +35,6 @@ export default BlogPostTemplate
 
 export const pageQuery = graphql`
   query BlogPostBySlug($slug: String!) {
-    site {
-      siteMetadata {
-        title
-      }
-    }
     markdownRemark(fields: { slug: { eq: $slug } }) {
       id
       excerpt(pruneLength: 160)

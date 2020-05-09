@@ -9,9 +9,6 @@ import { SiteMetadata } from "../types/siteMetadata"
 
 type Props = {
   data: {
-    site: {
-      siteMetadata: Pick<SiteMetadata, "title">
-    }
     allMarkdownRemark: {
       edges: Array<{
         node: Pick<
@@ -24,11 +21,10 @@ type Props = {
 }
 
 const BlogIndex: React.FC<Props> = ({ data }) => {
-  const siteTitle = data.site.siteMetadata.title
   const posts = data.allMarkdownRemark.edges
 
   return (
-    <Layout title={siteTitle} rightSide={<Bio />}>
+    <Layout rightSide={<Bio />}>
       <SEO title="" />
       {posts.map(({ node }) => {
         return <ArticleListItem key={node.fields.slug} {...node} />
@@ -41,26 +37,12 @@ export default BlogIndex
 
 export const pageQuery = graphql`
   query {
-    site {
-      siteMetadata {
-        title
-      }
-    }
     allMarkdownRemark(
       sort: { fields: [frontmatter___published], order: DESC }
     ) {
       edges {
         node {
-          excerpt
-          fields {
-            slug
-          }
-          frontmatter {
-            published(formatString: "LL", locale: "ja")
-            updated(formatString: "LL", locale: "ja")
-            title
-            tags
-          }
+          ...ArticleInList
         }
       }
     }

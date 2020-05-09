@@ -4,6 +4,8 @@ import { rhythm, scale } from "../../utils/typography"
 import styled from "styled-components"
 import { Header } from "./header"
 import { Ad } from "./ad"
+import { useStaticQuery, graphql } from "gatsby"
+import { SiteMetadata } from "../../types/siteMetadata"
 
 const mainAreaWidth = 24
 const sideBarWidth = 8
@@ -62,14 +64,28 @@ const LayoutStyle = styled.div`
 `
 
 type Props = {
-  title: string
   rightSide?: JSX.Element
 }
-const Layout: React.FC<Props> = ({ title, rightSide, children }) => {
+const Layout: React.FC<Props> = ({ rightSide, children }) => {
+  const { site } = useStaticQuery<{
+    site: {
+      siteMetadata: Pick<SiteMetadata, "title">
+    }
+  }>(
+    graphql`
+      query {
+        site {
+          siteMetadata {
+            title
+          }
+        }
+      }
+    `
+  )
   return (
     <LayoutStyle>
       <div>
-        <Header title={title} />
+        <Header title={site.siteMetadata.title} />
       </div>
       <main>{children}</main>
       <div>
