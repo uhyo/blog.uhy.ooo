@@ -1,7 +1,7 @@
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
-exports.createPages = async ({ graphql, actions }) => {
+const createEntryPages = async (graphql, actions) => {
   const { createPage } = actions
 
   const blogPost = path.resolve(`./src/templates/blog-post/index.tsx`)
@@ -48,6 +48,43 @@ exports.createPages = async ({ graphql, actions }) => {
       },
     })
   })
+}
+
+const createTagPages = async (graphql, actions) => {
+  const { createPage } = actions
+  const tagTemplate = path.resolve("./src/templates/tag/index.tsx")
+
+  const result = await graphql(`
+    {
+      allMarkdownRemark {
+        group(field: frontmatter___tags) {
+          tag: fieldValue
+          totalCount
+        }
+      }
+    }
+  `)
+
+  if (result.errors) {
+    throw result.errors
+  }
+
+  const tags = result.data.allMarkdownRemark.group
+
+  for (const { tag } of tags) {
+    createPage({
+      path: `/tag/${tag}`,
+      component: tagTemplate,
+      context: {
+        tag,
+      },
+    })
+  }
+}
+
+exports.createPages = async ({ graphql, actions }) => {
+  await createEntryPages(graphql, actions)
+  await createTagPages(graphql, actions)
 }
 
 exports.onCreateNode = ({ node, actions, getNode }) => {

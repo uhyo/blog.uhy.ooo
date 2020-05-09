@@ -1,12 +1,12 @@
-import { graphql, Link } from "gatsby"
+import { graphql } from "gatsby"
 import React from "react"
 import Layout from "../../components/layout"
 import SEO from "../../components/seo"
 import { MarkdownRemark } from "../../types/article"
 import { SiteMetadata } from "../../types/siteMetadata"
 import { Article } from "./Article"
-import { TOC } from "./TOC"
 import { Nav } from "./Nav"
+import { TOC } from "./TOC"
 
 type Props = {
   data: {
