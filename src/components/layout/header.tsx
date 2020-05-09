@@ -80,6 +80,7 @@ export const Header = styled(HeaderInner)`
   & > h1 {
     flex: auto 1 1;
     font-family: "Source Code Pro";
+    font-display: block;
     color: #ffffff;
     margin: 0;
     ${scale(1)}

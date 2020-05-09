@@ -61,7 +61,7 @@ export const ArticleListItem = styled(ArticleListItemInner)`
     color: ${grayColor.darker};
 
     & > div {
-      margin-left: ${rhythm(0.25)};
+      margin-left: ${rhythm(3 / 8)};
     }
   }
 `

@@ -1,6 +1,8 @@
 ---
 title: Hello World
 published: "2015-05-01T22:12:03.284Z"
+tags:
+  - 雑記
 ---
 
 This is my first post on my new fake blog! How exciting!

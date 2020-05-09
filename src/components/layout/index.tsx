@@ -1,14 +1,11 @@
+import { graphql, useStaticQuery } from "gatsby"
 import React from "react"
-
-import { rhythm, scale } from "../../utils/typography"
 import styled from "styled-components"
-import { Header } from "./header"
-import { Ad } from "./ad"
-import { useStaticQuery, graphql } from "gatsby"
 import { SiteMetadata } from "../../types/siteMetadata"
-
-const mainAreaWidth = 24
-const sideBarWidth = 8
+import { rhythm, scale } from "../../utils/typography"
+import { Ad } from "./ad"
+import { Header } from "./header"
+import { mainAreaWidth, sideBarWidth } from "./width"
 
 const LayoutStyle = styled.div`
   display: grid;
@@ -61,6 +58,12 @@ const LayoutStyle = styled.div`
     color: hsl(0, 0%, 0%, 0.5);
     ${scale(-0.25)};
   }
+
+  & > footer > aside {
+    @media (min-width: ${rhythm(mainAreaWidth + sideBarWidth)}) {
+      display: none;
+    }
+  }
 `
 
 type Props = {
@@ -93,6 +96,9 @@ const Layout: React.FC<Props> = ({ rightSide, children }) => {
         {rightSide}
       </div>
       <footer>
+        <aside>
+          <Ad />
+        </aside>
         © {new Date().getFullYear()}, Built with
         {` `}
         <a rel="external" href="https://www.gatsbyjs.org">
