@@ -15,7 +15,7 @@ type Props = {
     allMarkdownRemark: {
       edges: Array<{
         node: Pick<
-          MarkdownRemark<"published" | "updated" | "title">,
+          MarkdownRemark<"published" | "updated" | "title" | "tags">,
           "fields" | "frontmatter" | "excerpt"
         >
       }>
@@ -59,6 +59,7 @@ export const pageQuery = graphql`
             published(formatString: "LL", locale: "ja")
             updated(formatString: "LL", locale: "ja")
             title
+            tags
           }
         }
       }

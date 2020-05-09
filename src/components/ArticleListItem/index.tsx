@@ -5,11 +5,12 @@ import { MarkdownRemark } from "../../types/article"
 import { grayColor } from "../../utils/color"
 import { rhythm } from "../../utils/typography"
 import { ArticleDate } from "../ArticleDate"
+import { Tags } from "../Tags"
 
 type Props = {
   className?: string
 } & Pick<
-  MarkdownRemark<"title" | "published" | "updated">,
+  MarkdownRemark<"title" | "published" | "updated" | "tags">,
   "fields" | "frontmatter" | "excerpt"
 >
 
@@ -30,6 +31,11 @@ const ArticleListItemInner: React.FC<Props> = ({
           <small>
             <ArticleDate {...frontmatter} />
           </small>
+          {frontmatter.tags ? (
+            <div>
+              <Tags tags={frontmatter.tags} scale={-0.25} />
+            </div>
+          ) : null}
         </div>
       </header>
       <section>
@@ -46,7 +52,14 @@ export const ArticleListItem = styled(ArticleListItemInner)`
   & > header a {
     text-decoration: none;
   }
-  & > header small {
+  & > header > div {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
     color: ${grayColor.darker};
+
+    & > div {
+      margin-left: ${rhythm(0.25)};
+    }
   }
 `

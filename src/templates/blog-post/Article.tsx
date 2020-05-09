@@ -22,7 +22,11 @@ const ArticleInner: React.FC<Props> = ({ className, post }) => {
         <p>
           <ArticleDate {...post.frontmatter} />
         </p>
-        {post.frontmatter.tags ? <Tags tags={post.frontmatter.tags} /> : null}
+        {post.frontmatter.tags ? (
+          <div>
+            <Tags tags={post.frontmatter.tags} />
+          </div>
+        ) : null}
       </header>
       <main dangerouslySetInnerHTML={{ __html: post.html }} />
       <hr />
@@ -38,20 +42,17 @@ export const Article = styled(ArticleInner)`
 
   & > header > p {
     display: block;
+    margin-bottom: 0;
     ${scale(-0.25)};
-    margin-bottom: ${rhythm(0.5)};
     color: ${grayColor.darker};
   }
 
   & > header > div {
-    display: flex;
-    flex-flow: row nowrap;
+    margin: ${rhythm(0.25)} 0;
+  }
 
-    & > ul {
-      display: flex;
-      flex-flow: row wrap;
-      margin: 0;
-    }
+  & > main {
+    margin-top: ${rhythm(0.5)};
   }
 
   & > hr {

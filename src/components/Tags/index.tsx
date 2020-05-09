@@ -25,11 +25,12 @@ const TagsInner: React.FunctionComponent<Props> = ({ className, tags }) => {
   )
 }
 
-export const Tags = styled(TagsInner)`
+export const Tags = styled(TagsInner)<{
+  scale?: number
+}>`
   display: flex;
   flex-flow: row nowrap;
-  margin: ${rhythm(0.5)} 0;
-  ${scale(-1 / 8)}
+  ${props => scale(props.scale ?? -1 / 8)}
 
   & > *:first-child {
     align-self: center;
