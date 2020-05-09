@@ -65,6 +65,14 @@ const LayoutStyle = styled.div`
       display: none;
     }
   }
+
+  & > footer > div:first-child {
+    margin-bottom: ${rhythm(0.25)};
+  }
+
+  & > footer > div:last-child {
+    margin-top: ${rhythm(0.25)};
+  }
 `
 
 type Props = {
@@ -107,9 +115,10 @@ const Layout: React.FC<Props> = ({ rightSide, title, slug, children }) => {
       </div>
       <footer>
         {title !== undefined && slug !== undefined && (
-          <ShareButtons text={pageTitle} url={pageUrl} />
+          <div>
+            <ShareButtons text={pageTitle} url={pageUrl} />
+          </div>
         )}
-        <div></div>
         <aside>
           <Ad />
         </aside>

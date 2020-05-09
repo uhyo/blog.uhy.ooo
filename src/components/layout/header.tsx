@@ -73,6 +73,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
 export const Header = styled(HeaderInner)`
   display: flex;
   flex-flow: wrap row;
+  justify-content: flex-end;
   align-items: flex-end;
   background-color: ${mainColor.normal};
   padding: ${rhythm(0.5)} ${rhythm(3 / 4)};
