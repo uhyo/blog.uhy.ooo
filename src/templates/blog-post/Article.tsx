@@ -31,7 +31,7 @@ const ArticleInner: React.FC<Props> = ({ className, post }) => {
 
 export const Article = styled(ArticleInner)`
   & > header > h1 {
-    margin: ${rhythm(1)} 0 ${rhythm(0.25)};
+    margin: 0 0 ${rhythm(0.25)};
   }
 
   & > header > p {

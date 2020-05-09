@@ -1,7 +1,7 @@
 import React from "react"
 import styled from "styled-components"
-import { rhythm, scale } from "../../utils/typography"
 import { mainColor } from "../../utils/color"
+import { rhythm, scale } from "../../utils/typography"
 
 type Props = {
   tableOfContents: string
@@ -35,6 +35,7 @@ export const TOC = styled(TOCInner)`
   }
 
   a {
+    display: block;
     color: ${mainColor.normal};
     text-decoration: none;
   }
@@ -47,5 +48,14 @@ export const TOC = styled(TOCInner)`
 
   li > p {
     margin: 0 0 ${rhythm(0.5)} 0;
+  }
+
+  li > a {
+    margin: 0 0 ${rhythm(3 / 8)} 0;
+  }
+
+  li > p:hover,
+  li > a:hover {
+    background-color: hsla(0, 0%, 0%, 0.05);
   }
 `
