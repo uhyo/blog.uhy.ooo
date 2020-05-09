@@ -26,11 +26,19 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
+        path: `${__dirname}/content/tag`,
+        name: `tag`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
         path: `${__dirname}/content/assets`,
         name: `assets`,
       },
     },
     {
+      // remark for blog posts
       resolve: `gatsby-transformer-remark`,
       options: {
         plugins: [

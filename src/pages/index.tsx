@@ -37,6 +37,7 @@ export const pageQuery = graphql`
   query {
     allMarkdownRemark(
       sort: { fields: [frontmatter___published], order: DESC }
+      filter: { fields: { sourceFileType: { eq: "blog" } } }
     ) {
       edges {
         node {

@@ -10,6 +10,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 type Props = {
   data: {
+    markdownRemark: {
+      html: string
+    } | null
     allMarkdownRemark: {
       edges: Array<{
         node: ArticleListItemData
@@ -21,17 +24,28 @@ type Props = {
   }
 }
 
-const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
+const TagPageTemplate: React.FC<Props> = ({ data, pageContext }) => {
+  const tagDescHtml = data.markdownRemark?.html
   const posts = data.allMarkdownRemark.edges
   const { tag } = pageContext
 
   return (
     <Layout>
-      <SEO title={tag} />
+      <SEO title={`タグ: ${tag}`} />
       <h1>
         <FontAwesomeIcon icon="tags" aria-label="タグ" />
         {tag}
       </h1>
+      {tagDescHtml && (
+        <>
+          <main
+            dangerouslySetInnerHTML={{
+              __html: tagDescHtml,
+            }}
+          />
+          <hr />
+        </>
+      )}
       {posts.map(({ node }) => {
         return <ArticleListItem key={node.fields.slug} {...node} />
       })}
@@ -39,13 +53,19 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
   )
 }
 
-export default BlogPostTemplate
+export default TagPageTemplate
 
 export const pageQuery = graphql`
-  query($tag: String) {
+  query($tag: String, $slug: String) {
+    markdownRemark(fields: { slug: { eq: $slug } }) {
+      html
+    }
     allMarkdownRemark(
       sort: { fields: [frontmatter___published], order: DESC }
-      filter: { frontmatter: { tags: { in: [$tag] } } }
+      filter: {
+        frontmatter: { tags: { in: [$tag] } }
+        fields: { sourceFileType: { eq: "blog" } }
+      }
     ) {
       edges {
         node {

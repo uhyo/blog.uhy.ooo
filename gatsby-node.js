@@ -11,6 +11,7 @@ const createEntryPages = async (graphql, actions) => {
         allMarkdownRemark(
           sort: { fields: [frontmatter___published], order: DESC }
           limit: 1000
+          filter: { fields: { sourceFileType: { eq: "blog" } } }
         ) {
           edges {
             node {
@@ -72,11 +73,13 @@ const createTagPages = async (graphql, actions) => {
   const tags = result.data.allMarkdownRemark.group
 
   for (const { tag } of tags) {
+    const slug = `/tag/${tag}/`
     createPage({
-      path: `/tag/${tag}`,
+      path: slug,
       component: tagTemplate,
       context: {
         tag,
+        slug,
       },
     })
   }
@@ -91,7 +94,18 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
   if (node.internal.type === `MarkdownRemark`) {
-    const value = "/entry" + createFilePath({ node, getNode })
+    // parent node is from gatsby-source-filesystem
+    const parent = getNode(node.parent)
+    const { sourceInstanceName } = parent
+    createNodeField({
+      name: "sourceFileType",
+      node,
+      value: sourceInstanceName,
+    })
+
+    const prefix = sourceInstanceName === "blog" ? "/entry" : "/tag"
+
+    const value = prefix + createFilePath({ node, getNode })
     createNodeField({
       name: `slug`,
       node,
