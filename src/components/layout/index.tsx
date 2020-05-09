@@ -99,11 +99,13 @@ const Layout: React.FC<Props> = ({ rightSide, children }) => {
         <aside>
           <Ad />
         </aside>
-        © {new Date().getFullYear()}, Built with
-        {` `}
-        <a rel="external" href="https://www.gatsbyjs.org">
-          Gatsby
-        </a>
+        <div>
+          © {new Date().getFullYear()}, Built with
+          {` `}
+          <a rel="external" href="https://www.gatsbyjs.org">
+            Gatsby
+          </a>
+        </div>
       </footer>
     </LayoutStyle>
   )
