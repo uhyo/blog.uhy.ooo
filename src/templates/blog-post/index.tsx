@@ -6,6 +6,7 @@ import { MarkdownRemark } from "../../types/article"
 import { Article } from "./Article"
 import { Nav } from "./Nav"
 import { TOC } from "./TOC"
+import Bio from "../../components/bio"
 
 type Props = {
   data: {
@@ -26,7 +27,12 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
     <Layout
       title={post.frontmatter.title}
       slug={slug}
-      rightSide={<TOC tableOfContents={post.tableOfContents} />}
+      rightSide={
+        <>
+          <Bio />
+          <TOC tableOfContents={post.tableOfContents} />
+        </>
+      }
     >
       <SEO title={post.frontmatter.title} description={post.excerpt} />
       <Article post={post} />

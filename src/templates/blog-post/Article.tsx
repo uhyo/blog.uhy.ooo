@@ -3,7 +3,6 @@ import styled from "styled-components"
 import { ArticleDate } from "../../components/ArticleDate"
 import { Tags } from "../../components/Tags"
 import { MarkdownRemark } from "../../types/article"
-import { grayColor } from "../../utils/color"
 import { rhythm, scale } from "../../utils/typography"
 
 type Props = {

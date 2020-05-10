@@ -35,7 +35,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   h1, h2, h3, h4, h5, h6 {
-    color: ${mainColor.normal};
+    color: ${mainColor.dark};
 
     @media (prefers-color-scheme: dark) {
       color: var(--fg-color);
@@ -48,6 +48,20 @@ const GlobalStyle = createGlobalStyle`
 
   a:visited {
     color: var(--fg-link-visited-color);
+  }
+  /* prismjs */
+  .gatsby-highlight {
+    background-color: #f5f2f0;
+    border-radius: 0.3em;
+    margin: 0.5em 0;
+    padding-left: 0.5em;
+    overflow: auto;
+  }
+
+  .gatsby-highlight pre[class*="language-"].line-numbers {
+    padding: 0;
+    padding-left: 2.8em;
+    overflow: initial;
   }
 `
 
