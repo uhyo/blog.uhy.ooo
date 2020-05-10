@@ -25,7 +25,10 @@ const SEO: React.FC<Props> = ({
 }) => {
   const { site } = useStaticQuery<{
     site: {
-      siteMetadata: Pick<SiteMetadata, "title" | "description" | "social">
+      siteMetadata: Pick<
+        SiteMetadata,
+        "title" | "description" | "social" | "siteUrl"
+      >
     }
   }>(
     graphql`
@@ -34,6 +37,7 @@ const SEO: React.FC<Props> = ({
           siteMetadata {
             title
             description
+            siteUrl
             social {
               twitter
             }
@@ -78,6 +82,11 @@ const SEO: React.FC<Props> = ({
         {
           property: `og:type`,
           content: `website`,
+        },
+        {
+          property: `og:image`,
+          // TODO: remove this image file
+          content: `${site.siteMetadata.siteUrl}/images/blog-logo-256.png`,
         },
         {
           name: `twitter:card`,
