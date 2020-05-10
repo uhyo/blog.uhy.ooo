@@ -45,13 +45,16 @@ const SEO: React.FC<Props> = ({
 
   const metaDescription = description || site.siteMetadata.description
 
+  const titleDisp = title
+    ? `${title} - ${site.siteMetadata.title}`
+    : site.siteMetadata.title
+
   return (
     <Helmet
       htmlAttributes={{
         lang,
       }}
-      title={title || site.siteMetadata.title}
-      titleTemplate={title ? `%s - ${site.siteMetadata.title}` : undefined}
+      title={titleDisp}
       link={[
         {
           rel: "stylesheet",
@@ -66,7 +69,7 @@ const SEO: React.FC<Props> = ({
         },
         {
           property: `og:title`,
-          content: title,
+          content: titleDisp,
         },
         {
           property: `og:description`,
@@ -86,7 +89,7 @@ const SEO: React.FC<Props> = ({
         },
         {
           name: `twitter:title`,
-          content: title,
+          content: titleDisp,
         },
         {
           name: `twitter:description`,
