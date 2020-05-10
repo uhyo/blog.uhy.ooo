@@ -17,23 +17,7 @@ const theme = {
   scaleRatio: 2,
   headerFontFamily: ["sans-serif"],
   bodyFontFamily: ["sans-serif"],
-  headerColor: mainColor.dark,
   bodyColor: "hsl(0,0%,0%,0.8)",
-  overrideStyles: (
-    {
-      /*adjustFontSizeTo, rhythm*/
-    }
-  ) => ({
-    body: {
-      backgroundColor: grayColor.lightest,
-    },
-    a: {
-      color: mainColor.normal,
-    },
-    "a:visited": {
-      color: subColor.normal,
-    },
-  }),
 }
 
 const typography = new Typography(theme)

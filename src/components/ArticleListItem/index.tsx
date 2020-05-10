@@ -1,8 +1,7 @@
-import { Link, graphql } from "gatsby"
+import { graphql, Link } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { MarkdownRemark } from "../../types/article"
-import { grayColor } from "../../utils/color"
 import { rhythm } from "../../utils/typography"
 import { ArticleDate } from "../ArticleDate"
 import { Tags } from "../Tags"
@@ -58,7 +57,7 @@ export const ArticleListItem = styled(ArticleListItemInner)`
     display: flex;
     flex-flow: row wrap;
     align-items: center;
-    color: ${grayColor.darker};
+    color: var(--fg-demisub-color);
 
     & > div {
       margin-left: ${rhythm(3 / 8)};

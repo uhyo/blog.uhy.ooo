@@ -1,12 +1,55 @@
 import { graphql, useStaticQuery } from "gatsby"
 import React from "react"
-import styled from "styled-components"
+import styled, { createGlobalStyle } from "styled-components"
 import { SiteMetadata } from "../../types/siteMetadata"
+import { grayColor, mainColor, subColor } from "../../utils/color"
 import { rhythm, scale } from "../../utils/typography"
 import { Ad } from "./ad"
 import { Header } from "./header"
-import { mainAreaWidth, sideBarWidth } from "./width"
 import { ShareButtons } from "./share"
+import { mainAreaWidth, sideBarWidth } from "./width"
+
+const GlobalStyle = createGlobalStyle`
+  :root {
+    --bg-color: white;
+    --bg-light-color: ${grayColor.lightest};
+    --fg-color: hsl(0, 0%, 0%, 0.8);
+    --fg-demisub-color: hsl(0, 0%, 0%, 0.65);
+    --fg-sub-color: hsl(0, 0%, 0%, 0.5);
+    --fg-link-color: ${mainColor.normal};
+    --fg-link-visited-color: ${subColor.normal};
+
+    @media (prefers-color-scheme: dark) {
+      --bg-color: ${grayColor.darkest};
+      --bg-light-color: ${grayColor.darker};
+      --fg-color: hsl(0, 100%, 100%, 0.9);
+      --fg-demisub-color: hsl(0, 100%, 100%, 0.78);
+      --fg-sub-color: hsl(0, 100%, 100%, 0.65);
+      --fg-link-color: ${mainColor.light};
+      --fg-link-visited-color: ${subColor.light};
+    }
+  }
+
+  body {
+    background-color: var(--bg-light-color);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: ${mainColor.normal};
+
+    @media (prefers-color-scheme: dark) {
+      color: var(--fg-color);
+    }
+  }
+
+  a {
+    color: var(--fg-link-color);
+  }
+
+  a:visited {
+    color: var(--fg-link-visited-color);
+  }
+`
 
 const LayoutStyle = styled.div`
   display: grid;
@@ -41,7 +84,8 @@ const LayoutStyle = styled.div`
     grid-area: main;
     max-width: ${rhythm(mainAreaWidth)};
     padding: ${rhythm(1)};
-    background-color: white;
+    background-color: var(--bg-color);
+    color: var(--fg-color);
   }
 
   & > div:nth-of-type(2) {
@@ -55,8 +99,8 @@ const LayoutStyle = styled.div`
   & > footer {
     grid-area: footer;
     padding: ${rhythm(1)} ${rhythm(1)} ${rhythm(1)};
-    background-color: white;
-    color: hsl(0, 0%, 0%, 0.5);
+    background-color: var(--bg-color);
+    color: var(--fg-sub-color);
     ${scale(-0.25)};
   }
 
@@ -105,6 +149,7 @@ const Layout: React.FC<Props> = ({ rightSide, title, slug, children }) => {
 
   return (
     <LayoutStyle>
+      <GlobalStyle />
       <div>
         <Header title={site.siteMetadata.title} />
       </div>

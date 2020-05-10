@@ -80,10 +80,12 @@ export const Header = styled(HeaderInner)`
 
   & > h1 {
     flex: auto 1 1;
+    margin: 0;
+  }
+  & > h1 > a {
     font-family: "Source Code Pro";
     font-display: block;
-    color: #ffffff;
-    margin: 0;
+    color: white;
     ${scale(1)}
   }
 
@@ -94,11 +96,11 @@ export const Header = styled(HeaderInner)`
     & > a {
       display: inline-block;
       margin: 0 ${rhythm(1 / 4)};
+      color: white;
     }
   }
 
   a {
-    color: #ffffff;
     text-decoration: none;
   }
 `

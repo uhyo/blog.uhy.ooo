@@ -36,7 +36,7 @@ export const TOC = styled(TOCInner)`
 
   a {
     display: block;
-    color: ${mainColor.normal};
+    color: var(--fg-link-color);
     text-decoration: none;
   }
 

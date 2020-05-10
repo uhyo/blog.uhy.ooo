@@ -19,5 +19,6 @@ export const Ad = styled(AdInner)`
   height: ${rhythm(5)};
 
   background-color: ${grayColor.lighter};
+  color: ${grayColor.darker};
   ${scale(-0.25)};
 `

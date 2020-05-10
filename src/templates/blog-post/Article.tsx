@@ -44,7 +44,7 @@ export const Article = styled(ArticleInner)`
     display: block;
     margin-bottom: 0;
     ${scale(-0.25)};
-    color: ${grayColor.darker};
+    color: var(--fg-demisub-color);
   }
 
   & > header > div {

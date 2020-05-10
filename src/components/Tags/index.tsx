@@ -34,7 +34,6 @@ export const Tags = styled(TagsInner)<{
 
   & > *:first-child {
     align-self: center;
-    color: ${grayColor.darkest};
   }
 
   & > ul {

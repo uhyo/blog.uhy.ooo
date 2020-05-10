@@ -73,7 +73,7 @@ const Bio = styled(BioInner)`
   align-items: center;
   padding: ${rhythm(0.5)} ${rhythm(0.25)};
   font-style: italic;
-  color: ${grayColor.darkest};
+  color: var(--fg-demisub-color);
   ${scale(-3 / 8)};
 
   & > a {
