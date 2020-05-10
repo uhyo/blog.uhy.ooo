@@ -21,8 +21,8 @@ const GlobalStyle = createGlobalStyle`
     --fg-link-visited-color: ${subColor.normal};
 
     @media (prefers-color-scheme: dark) {
-      --bg-color: ${grayColor.darkest};
-      --bg-light-color: ${grayColor.darker};
+      --bg-color: ${grayColor.black};
+      --bg-light-color: ${grayColor.darkest};
       --fg-color: hsl(0, 100%, 100%, 0.9);
       --fg-demisub-color: hsl(0, 100%, 100%, 0.78);
       --fg-sub-color: hsl(0, 100%, 100%, 0.65);
