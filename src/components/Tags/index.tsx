@@ -17,7 +17,7 @@ const TagsInner: React.FunctionComponent<Props> = ({ className, tags }) => {
       <ul>
         {tags.map(tag => (
           <li key={tag}>
-            <Link to={`/tag/${tag}`}>{tag}</Link>
+            <Link to={`/tag/${tag}/`}>{tag}</Link>
           </li>
         ))}
       </ul>

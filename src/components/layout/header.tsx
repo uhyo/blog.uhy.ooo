@@ -84,7 +84,6 @@ export const Header = styled(HeaderInner)`
   }
   & > h1 > a {
     font-family: "Source Code Pro";
-    font-display: block;
     color: white;
     ${scale(1)}
   }
