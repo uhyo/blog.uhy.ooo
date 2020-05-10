@@ -17,6 +17,7 @@ module.exports = {
     },
   },
   plugins: [
+    "gatsby-plugin-netlify-cache",
     {
       resolve: `gatsby-source-filesystem`,
       options: {
