@@ -115,7 +115,12 @@ const LayoutStyle = styled.div`
     padding: ${rhythm(1)} ${rhythm(1)} ${rhythm(1)};
     background-color: var(--bg-color);
     color: var(--fg-demisub-color);
+  }
+
+  & > footer p {
+    margin-bottom: ${rhythm(0.25)};
     ${scale(-0.25)};
+    line-height: 1.25;
   }
 
   & > footer > aside {
@@ -129,7 +134,7 @@ const LayoutStyle = styled.div`
   }
 
   & > footer > div:last-child {
-    margin-top: ${rhythm(0.25)};
+    margin-top: ${rhythm(3 / 8)};
   }
 `
 
@@ -182,11 +187,23 @@ const Layout: React.FC<Props> = ({ rightSide, title, slug, children }) => {
           <Ad />
         </aside>
         <div>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a rel="external" href="https://www.gatsbyjs.org">
-            Gatsby
-          </a>
+          <p>
+            © {new Date().getFullYear()}, Built with
+            {` `}
+            <a rel="external" href="https://www.gatsbyjs.org">
+              Gatsby
+            </a>
+          </p>
+          <p>
+            このサイトはGoogle Analyticsを使用しています。
+            <a
+              href="https://policies.google.com/technologies/partner-sites?hl=ja"
+              target="_blank"
+              rel="external noopener"
+            >
+              詳しく見る
+            </a>
+          </p>
         </div>
       </footer>
     </LayoutStyle>
