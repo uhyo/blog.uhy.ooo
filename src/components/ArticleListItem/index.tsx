@@ -2,7 +2,7 @@ import { graphql, Link } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { MarkdownRemark } from "../../types/article"
-import { rhythm } from "../../utils/typography"
+import { rhythm, scale } from "../../utils/typography"
 import { ArticleDate } from "../ArticleDate"
 import { Tags } from "../Tags"
 
@@ -39,14 +39,17 @@ const ArticleListItemInner: React.FC<Props> = ({
           ) : null}
         </div>
       </header>
-      <section>
-        <p>{excerpt}</p>
-      </section>
+      <section>{excerpt}</section>
+      <nav>
+        <Link to={fields.slug}>全文を見る</Link>
+      </nav>
     </article>
   )
 }
 
 export const ArticleListItem = styled(ArticleListItemInner)`
+  margin-bottom: ${rhythm(1)};
+
   & > header > h3 {
     margin-bottom: ${rhythm(0.25)};
   }
@@ -62,6 +65,11 @@ export const ArticleListItem = styled(ArticleListItemInner)`
     & > div {
       margin-left: ${rhythm(3 / 8)};
     }
+  }
+
+  & > nav a {
+    color: var(--fg-sub-color);
+    ${scale(-0.25)}
   }
 `
 
