@@ -51,7 +51,7 @@ export const Tags = styled(TagsInner)<{
     padding: ${rhythm(1 / 8)};
     border-radius: 10%;
     background-color: ${grayColor.lighter};
-    color: ${grayColor.darker};
+    color: ${grayColor.darkest};
     text-decoration: none;
   }
 `

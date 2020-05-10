@@ -100,7 +100,7 @@ const LayoutStyle = styled.div`
     grid-area: footer;
     padding: ${rhythm(1)} ${rhythm(1)} ${rhythm(1)};
     background-color: var(--bg-color);
-    color: var(--fg-sub-color);
+    color: var(--fg-demisub-color);
     ${scale(-0.25)};
   }
 
