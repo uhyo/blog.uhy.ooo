@@ -1,8 +1,8 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { graphql, Link, useStaticQuery } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { mainColor } from "../../utils/color"
-import { FaIcon } from "../../utils/FaIcon"
 import { rhythm, scale } from "../../utils/typography"
 
 type Props = {
@@ -39,7 +39,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
       </h1>
       <nav>
         <a href="/rss.xml" aria-label="RSSフィード">
-          <FaIcon icon="rss" />
+          <FontAwesomeIcon icon="rss" />
         </a>
         <a
           href={author.url}
@@ -47,7 +47,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           rel="external noopener"
           aria-label={`${author.name}のTwitter`}
         >
-          <FaIcon icon="home" />
+          <FontAwesomeIcon icon="home" />
         </a>
         <a
           href={`https://github.com/${social.github}`}
@@ -55,7 +55,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           rel="external noopener"
           aria-label={`${author.name}のGitHub`}
         >
-          <FaIcon icon={["fab", "github"]} />
+          <FontAwesomeIcon icon={["fab", "github"]} />
         </a>
         <a
           href={`https://twitter.com/${social.twitter}`}
@@ -63,7 +63,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           rel="external noopener"
           aria-label={`${author.name}のウェブサイト`}
         >
-          <FaIcon icon={["fab", "twitter"]} />
+          <FontAwesomeIcon icon={["fab", "twitter"]} />
         </a>
       </nav>
     </header>
