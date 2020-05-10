@@ -1,8 +1,8 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { Link } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { grayColor } from "../../utils/color"
+import { FaIcon } from "../../utils/FaIcon"
 import { rhythm, scale } from "../../utils/typography"
 
 type Props = {
@@ -13,7 +13,7 @@ type Props = {
 const TagsInner: React.FunctionComponent<Props> = ({ className, tags }) => {
   return (
     <div className={className}>
-      <FontAwesomeIcon aria-label="タグ" icon="tags" />
+      <FaIcon aria-label="タグ" icon="tags" />
       <ul>
         {tags.map(tag => (
           <li key={tag}>

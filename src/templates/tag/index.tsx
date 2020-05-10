@@ -1,12 +1,12 @@
 import { graphql } from "gatsby"
 import React from "react"
+import {
+  ArticleListItem,
+  ArticleListItemData,
+} from "../../components/ArticleListItem"
 import Layout from "../../components/layout"
 import SEO from "../../components/seo"
-import {
-  ArticleListItemData,
-  ArticleListItem,
-} from "../../components/ArticleListItem"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FaIcon } from "../../utils/FaIcon"
 
 type Props = {
   data: {
@@ -35,7 +35,7 @@ const TagPageTemplate: React.FC<Props> = ({ data, pageContext }) => {
     <Layout title={title} slug={slug}>
       <SEO title={title} />
       <h1>
-        <FontAwesomeIcon icon="tags" aria-label="タグ" />
+        <FaIcon icon="tags" aria-label="タグ" />
         {tag}
       </h1>
       {tagDescHtml && (

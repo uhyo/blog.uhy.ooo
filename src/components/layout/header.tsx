@@ -1,9 +1,9 @@
-import { Link, useStaticQuery, graphql } from "gatsby"
+import { graphql, Link, useStaticQuery } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { mainColor } from "../../utils/color"
+import { FaIcon } from "../../utils/FaIcon"
 import { rhythm, scale } from "../../utils/typography"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 type Props = {
   className?: string
@@ -39,7 +39,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
       </h1>
       <nav>
         <a href="/rss.xml" aria-label="RSSフィード">
-          <FontAwesomeIcon icon="rss" />
+          <FaIcon icon="rss" />
         </a>
         <a
           href={author.url}
@@ -47,7 +47,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           rel="external noopener"
           aria-label={`${author.name}のTwitter`}
         >
-          <FontAwesomeIcon icon="home" />
+          <FaIcon icon="home" />
         </a>
         <a
           href={`https://github.com/${social.github}`}
@@ -55,7 +55,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           rel="external noopener"
           aria-label={`${author.name}のGitHub`}
         >
-          <FontAwesomeIcon icon={["fab", "github"]} />
+          <FaIcon icon={["fab", "github"]} />
         </a>
         <a
           href={`https://twitter.com/${social.twitter}`}
@@ -63,7 +63,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           rel="external noopener"
           aria-label={`${author.name}のウェブサイト`}
         >
-          <FontAwesomeIcon icon={["fab", "twitter"]} />
+          <FaIcon icon={["fab", "twitter"]} />
         </a>
       </nav>
     </header>

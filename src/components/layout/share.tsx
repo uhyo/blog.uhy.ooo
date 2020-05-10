@@ -1,6 +1,6 @@
-import styled from "styled-components"
 import React from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import styled from "styled-components"
+import { FaIcon } from "../../utils/FaIcon"
 import { rhythm, scale } from "../../utils/typography"
 import HBLogo from "./hatenabookmark-logomark.svg"
 
@@ -31,7 +31,7 @@ const ShareButtonsInner: React.FunctionComponent<Props> = ({
           rel="external noopener"
           target="_blank"
         >
-          <FontAwesomeIcon icon={["fab", "twitter"]} />
+          <FaIcon icon={["fab", "twitter"]} />
         </a>
         <a href={hatenaHref} rel="external noopener" target="_blank">
           <img src={HBLogo} alt="はてなブックマーク" />
