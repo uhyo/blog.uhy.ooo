@@ -34,7 +34,8 @@ export const TOC = styled(TOCInner)`
     list-style-type: none;
   }
 
-  a {
+  a,
+  a:visited {
     display: block;
     color: var(--fg-link-color);
     text-decoration: none;
@@ -57,5 +58,9 @@ export const TOC = styled(TOCInner)`
   li > p:hover,
   li > a:hover {
     background-color: hsla(0, 0%, 0%, 0.05);
+
+    @media (prefers-color-scheme: dark) {
+      background-color: hsla(0, 100%, 100%, 0.05);
+    }
   }
 `
