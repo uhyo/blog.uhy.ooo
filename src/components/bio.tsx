@@ -9,7 +9,6 @@ import { graphql, useStaticQuery } from "gatsby"
 import Image from "gatsby-image"
 import React from "react"
 import styled from "styled-components"
-import { grayColor } from "../utils/color"
 import { rhythm, scale } from "../utils/typography"
 
 const BioInner: React.FunctionComponent<{
@@ -32,6 +31,7 @@ const BioInner: React.FunctionComponent<{
           }
           social {
             twitter
+            qiita
           }
         }
       }
@@ -62,7 +62,12 @@ const BioInner: React.FunctionComponent<{
         />
       </a>
       <div>
-        <b>{author.name}</b>: {author.summary}
+        <div>
+          <b>{author.name}</b>: {author.summary}
+        </div>
+        <div>
+          <a href={`https://qiita.com/${social.qiita}`}>Qiita</a>
+        </div>
       </div>
     </div>
   )

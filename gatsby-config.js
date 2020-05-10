@@ -13,6 +13,7 @@ module.exports = {
     social: {
       twitter: `uhyo_`,
       github: "uhyo",
+      qiita: "uhyo",
     },
   },
   plugins: [

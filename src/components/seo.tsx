@@ -56,7 +56,7 @@ const SEO: React.FC<Props> = ({
         {
           rel: "stylesheet",
           href:
-            "https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@700&display=swap",
+            "https://fonts.googleapis.com/css2?family=Roboto+Mono&Source+Code+Pro:wght@700&display=swap",
         },
       ]}
       meta={[

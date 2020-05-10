@@ -51,7 +51,7 @@ const GlobalStyle = createGlobalStyle`
   }
   /* prismjs */
   .gatsby-highlight {
-    background-color: #f5f2f0;
+    background-color: #2f2f2f;
     border-radius: 0.3em;
     margin: 0.5em 0;
     padding-left: 0.5em;
