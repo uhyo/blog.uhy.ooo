@@ -54,15 +54,49 @@ const GlobalStyle = createGlobalStyle`
   .gatsby-highlight {
     background-color: #2f2f2f;
     border-radius: 0.3em;
-    margin: 0.5em 0;
+    margin: ${rhythm(1)} 0;
     padding-left: 0.5em;
     overflow: auto;
+  }
+
+  @media (max-width: 640px) {
+    .gatsby-highlight {
+      ${scale(-0.25)}
+    }
   }
 
   .gatsby-highlight pre[class*="language-"].line-numbers {
     padding: 0;
     padding-left: 2.8em;
     overflow: initial;
+  }
+
+  .gatsby-code-title {
+    display: block;
+    background: #2f2f2f;
+    width: 100%;
+    border-top-left-radius: 0.3em;
+    border-top-right-radius: 0.3em;
+    overflow: hidden;
+    margin-top: ${rhythm(1)};
+  }
+
+  .gatsby-code-title span {
+    display: inline-block;
+    height: calc(${rhythm(1)} - 3px);
+    position: relative;
+    color: ${grayColor.lightest};
+    background: ${grayColor.darker};
+    border-top-left-radius: 0.3em;
+    border-bottom-right-radius: 0.3em;
+    padding: 0 4px 4px 4px;
+    top: -3px;
+  }
+
+  .gatsby-code-title + .gatsby-highlight {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    margin-top: 0;
   }
 `
 

@@ -45,6 +45,9 @@ module.exports = {
       options: {
         plugins: [
           {
+            resolve: "gatsby-remark-prismjs-title",
+          },
+          {
             resolve: `gatsby-remark-images`,
             options: {
               maxWidth: 590,

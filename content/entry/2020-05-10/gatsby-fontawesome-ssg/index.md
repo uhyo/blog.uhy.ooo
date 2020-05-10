@@ -11,7 +11,7 @@ Font Awesomeは何か昔から流行っているフリーのアイコン集で�
 
 両者の組み合わせることも非常によくあるらしく、"Gatsby FontAwesome"などでGoogle検索するとやり方を記した記事がたくさんヒットします。また、[Gatsbyの公式でもFontAwesomeの使用法がアナウンスされています](https://www.gatsbyjs.org/docs/recipes/styling-css/)。
 
-しかし、実際に静的サイトをビルドしてみると**アイコンの表示が一瞬遅れる**という問題が発生しました。公式のガイドに罠があるのはとてもつらいですね。また、アイコンが表示されていない間はアイコンに幅がないので、それを考慮せずにCSSを書いていた場合はアイコンの表示に伴ってレイアウトが動きます。とてもつらいですね。
+しかし、実際に静的サイトをビルドしてみると、productionbビルドでは**アイコンの表示が一瞬遅れる**という問題が発生しました。公式のガイドに罠があるのはとてもつらいですね。また、アイコンが表示されていない間はアイコンに幅がないので、それを考慮せずにCSSを書いていた場合はアイコンの表示に伴ってレイアウトが動きます。とてもつらいですね。
 
 この記事では、この問題に対する対処法を紹介します。よくあるシチュエーションだと思われるわりに（少なくとも軽く調べただけでは）日本語の記事が出てこなかったので記事にしました。
 
@@ -36,7 +36,7 @@ Font Awesomeは何か昔から流行っているフリーのアイコン集で�
 
 FontAwesome公式のガイドにしたがってライブラリを構築している場合、before/afterは次のようになります。
 
-```ts:before
+```ts:title=before
 import { library } from "@fortawesome/fontawesome-svg-core"
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons"
 import { faHome, faRss, faTags } from "@fortawesome/free-solid-svg-icons"
@@ -46,7 +46,7 @@ library.add(faHome, faRss, faTags, faTwitter, faGithub);
 
 ↓
 
-```ts:after
+```ts:title=after
 import { config, library } from "@fortawesome/fontawesome-svg-core"
 import { faGithub, faTwitter } from "@fortawesome/free-brands-svg-icons"
 import { faHome, faRss, faTags } from "@fortawesome/free-solid-svg-icons"
