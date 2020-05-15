@@ -98,6 +98,11 @@ const GlobalStyle = createGlobalStyle`
     border-top-right-radius: 0;
     margin-top: 0;
   }
+
+  /* remark footnotes */
+  .footnotes {
+    ${scale(-1 / 8)}
+  }
 `
 
 const LayoutStyle = styled.div`

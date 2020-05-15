@@ -4,6 +4,7 @@ import { ArticleDate } from "../../components/ArticleDate"
 import { Tags } from "../../components/Tags"
 import { MarkdownRemark } from "../../types/article"
 import { rhythm, scale } from "../../utils/typography"
+import { grayColor } from "../../utils/color"
 
 type Props = {
   className?: string
@@ -56,5 +57,11 @@ export const Article = styled(ArticleInner)`
 
   & > hr {
     margin-bottom: ${rhythm(1)};
+  }
+
+  h2 {
+    margin-top: ${rhythm(3)};
+    padding-bottom: ${rhythm(1 / 16)};
+    border-bottom: 1px solid ${grayColor.light};
   }
 `

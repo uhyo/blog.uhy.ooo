@@ -74,6 +74,7 @@ module.exports = {
               rel: "external noopener",
             },
           },
+          "gatsby-remark-numbered-footnotes",
         ],
       },
     },
