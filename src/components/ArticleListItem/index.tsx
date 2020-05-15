@@ -80,8 +80,8 @@ export const query = graphql`
       slug
     }
     frontmatter {
-      published(formatString: "LL", locale: "ja")
-      updated(formatString: "LL", locale: "ja")
+      published
+      updated
       title
       tags
     }

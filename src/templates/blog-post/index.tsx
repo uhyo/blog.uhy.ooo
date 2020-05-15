@@ -52,8 +52,8 @@ export const pageQuery = graphql`
       tableOfContents
       frontmatter {
         title
-        published(formatString: "LL", locale: "ja")
-        updated(formatString: "LL", locale: "ja")
+        published
+        updated
         tags
       }
     }
