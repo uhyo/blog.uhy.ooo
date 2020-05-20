@@ -68,6 +68,10 @@ const SEO: React.FC<Props> = ({
       ]}
       meta={[
         {
+          name: "google-site-verification",
+          content: "vkLNrhODKBHfKRqUsDXHvuMLqlFgq7roYXq_fUqTYXo",
+        },
+        {
           name: `description`,
           content: metaDescription,
         },
