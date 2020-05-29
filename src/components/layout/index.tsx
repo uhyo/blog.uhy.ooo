@@ -50,6 +50,11 @@ const GlobalStyle = createGlobalStyle`
     color: var(--fg-demisub-color);
   }
 
+  table {
+    display: block;
+    overflow: auto;
+  }
+
   a {
     color: var(--fg-link-color);
   }
