@@ -43,6 +43,13 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 
+  blockquote {
+    margin-left: 0;
+    padding-left: ${rhythm(1)};
+    border-left: ${rhythm(1 / 8)} solid ${grayColor.light};
+    color: var(--fg-demisub-color);
+  }
+
   a {
     color: var(--fg-link-color);
   }
