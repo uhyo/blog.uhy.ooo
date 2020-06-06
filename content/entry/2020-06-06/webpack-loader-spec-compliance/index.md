@@ -1,0 +1,191 @@
+---
+title: import文で画像やCSSを読み込むのはECMAScript仕様違反か
+published: "2020-06-07T09:00+09:00"
+updated: "2020-06-07T09:00+09:00"
+tags:
+  - JavaScript
+  - ECMAScript
+---
+
+近頃のJavaScript開発は、モジュールとして書かれた複数のJavaScriptファイルを`import`文や`export`文を通じて連携させるのが基本です。また、それらのファイルは**Webpack**に代表されるバンドラによって事前に処理され、`import`文の解決・ファイルの結合といった前処理を施されるのが普通です。まったく、各ファイルが他に影響を与えないように`(function(){ ... })()`で囲んで文字列連結していた時代が懐かしいですね。
+
+さて、`import`文の解決を担当するバンドラは、大抵**JavaScriptプログラム以外のものを読み込む機能**を備えています。Webpackならば**loader**と呼ばれるものですね。例えば、`style-loader`や`css-loader`が持つCSS Modulesの機能を使うと次のようなプログラムを書くことができます（Reactの例）。
+
+```jsx
+import styles from "./style.css";
+
+function Component() {
+  return (<div className={styles.wrapper}>
+    ...
+  </div>);
+}
+```
+
+これに関して、先日Twitterで[このようなクイズを出してみました](https://twitter.com/uhyo_/status/1268542577034305536)。
+
+> 【ECMAScriptクイズ】<br>
+> Webpackのようなバンドラではloaderを用いてJavaScript以外のファイル（CSSや画像など）をimport文で読み込むことができるが　それは厳密にはECMAScript仕様違反か（ぇ
+>
+> - ECMAScript仕様違反である
+> - ECMAScript仕様違反ではない
+
+つまり、`import`文はJavaScriptの一部なので、JavaScriptを定義する文書である**ECMAScript仕様書**にその挙動が定義されているのですが、その`import`文でJavaScriptファイル以外のものを読み込むのはECMAScript仕様書で認められているのかどうかという問題です。
+
+この記事はこのクイズに対する答え合わせです。結論としては、これは**ECMAScript仕様違反ではありません**。この記事では、なぜ`import`文でJavaScript以外を読み込むのが許されるのか解説します。この記事で仕様書という場合は、この記事を書いた時点での最新版である2020年6月3日版ドラフトを指します。
+
+- https://tc39.es/ecma262/
+
+## Module Records
+
+いきなり核心に迫りますが、ECMAScript仕様書では**Module Record**という概念が定義されています（[15.2.1.15 Abstract Module Records](https://tc39.es/ecma262/#sec-abstract-module-records)）。これは、それぞれのモジュールを表す仕様書上のオブジェクトです。
+
+Module Recordには以下の3種類があります。これらは別々のものではなく、ある種の部分クラス関係にあります。すなわち、Source Text Module RecordはCyclic Module Recordの一種であり、 Cyclic Module RecordはAbstract Module Recordの一種です。
+
+| 名前 | 特徴 |
+| --- | ---- |
+| Abstract Module Record | いくつかのbindingをエクスポートする |
+| Cyclic Module Record | 他のモジュールに依存することができる |
+| Source Text Module Record | JavaScriptソースコードによって定義されたモジュールである |
+
+この表から察せられるように、`import`でJavaScriptファイルを読み込んだ場合、そのモジュールはSource Text Module Recordとして扱われます。逆に言えば、JavaScriptファイル以外のものを`import`で読み込む余地があるということです。そのようなものは、言語仕様上はAbstract Module RecordやCyclic Module Recordとして扱われることになります。両者の違いは、Cyclic Module Recordは他のModule Recordへの依存を発生させることができるのに対して、Abstract Module Recordはできません。
+
+というのも、モジュールにより構成されたJavaScriptプログラムを実行する場合、それは**Link**と**Evaluate**という2つの工程から成ります。**Link**はいくつかのModule Recordから成る依存関係グラフを構築する段階であり、基本的には「`import`されているプログラムを読み込む→読み込まれたプログラムを解析」を依存関係の末端まで繰り返すプロセスです。Source Text Module Recordならば話は簡単で、JavaScriptで書かれたモジュールなので、プログラムをパースして`import`文を探せば次の依存先を発見できます。
+
+Cyclic Module Recordはモジュールとしての中身はブラックボックスですが、「何を`import`しているか」は取得することができます。これにより、Cyclic Module Recordは依存関係グラフに組み込まれることができます。Cyclicという名前は循環参照を指しています。これは分かりにくいネーミングですが、依存関係グラフに組み込まれると言うことは必然的に循環参照に巻き込まれることがあると言うことです。ES Moduleはモジュールの依存関係に循環参照が発生した場合のケアが手厚いので、そのような場合でも最大限動作します。
+
+一方のAbstract Module Recordは、他のモジュールへの依存関係を持ちません。依存関係グラフに現れた場合は、必ず他への依存を持たない末端のモジュールとなります。ではAbstract Module Recordは何ができるのかと言えば、「何がエクスポートされているか」は得ることができます。これはいかなるモジュールにも共通する性質です。
+
+モジュール実行のもう一つの工程である**Evaluate**は、完成したモジュール依存関係グラフを元に実際にプログラムを実行する段階です。基本的には依存関係の末端から実行されていきますが、循環参照が発生した場合のルールもちゃんと決まっています。Source Text Module Recordでは自身が実行されたときに何が起こるかは当然ECMAScript仕様の範疇ですが、Abstract Module RecordやCyclic Module Recordの場合はEvaluateのフェーズで何が起こるかはブラックボックスです。
+
+冒頭のCSSの例の場合は、Abstract Module RecordかCyclic Module Recordか悩ましいですね。CSSは`@import`で他のファイルを読み込むことができますから、その点でCyclic Module Recordと言えるかもしれませんん。その一方で、`@import`でCSS以外のファイルを読み込むというようなことは意味を成しません。ですから、`@import`の処理はECMAScript仕様上のLinkプロセスに乗らずに独自に解決されていると見ることもできます。この考え方の場合、CSSファイルはAbstract Module Recordとなります。実際にどちらなのかはちゃんと検討したわけではありませんが、多分Abstract Module Recordだと思います。
+
+### Module Recordsのインターフェースを確認する
+
+以上で説明したことを仕様書で確認してみましょう。[Table 39: Abstract Methods of Module Records](https://tc39.es/ecma262/#table-37)によれば、Abstract Module Recordは次の4つのメソッドを持っています。
+
+| 名前 | 説明 |
+| --- | --- |
+| GetExportedNames | このモジュールからエクスポートされている名前のリストを得る。 |
+| ResolveExport | このモジュールからエクスポートされている指定された名前のバインディングを得る。 |
+| Link | Link段階で呼び出される。依存先のモジュールを解決し、自身のモジュールのmodule Environment Recordを初期化する。 |
+| Evaluate | Evaluate段階で呼び出される。依存先のモジュールを実行し、自分自身も実行する。 |
+
+ここに出てきたmodule Environment Recordというのは[前の記事](/entry/2020-05-30/this/)にも出てきた概念で、要するにモジュールのトップレベルスコープのことです。
+
+あらゆるModule RecordはAbstract Module Recordですから、ここに挙げられているメソッドがモジュールの基本機能ということになります。具体的には、**エクスポートされた名前の一覧を取得できる**こと、**名前を指定してエクスポートされたバインディングを得られること**、**自身および依存先のモジュールを初期化しmodule Environment Recordを用意すること**、そして**自身および依存先のモジュールを実行すること**です。
+
+Abstract Module Recordにおいては、この4つのメソッドの具体的な定義は与えられていません。つまり、このインターフェースの範囲内で、（JavaScriptとは限らない）モジュールは好き勝手に振る舞うことができます。Abstract Module Recordならばその内部で何が起こっているかは観測できません。もちろん、CSSファイルに由来するAbstract Module Recordがこのファイルで定義されたクラス名をまとめたオブジェクトをエクスポートするというような挙動も、Abstract Module Recordの挙動として妥当なものです。
+
+次にCyclic Module Recordの場合を確かめます。[Table 41: Additional Abstract Methods of Cyclic Module Records](https://tc39.es/ecma262/#table-cyclic-module-methods)によれば、Cyclic Module Recordは以下のメソッドを持ちます。これらの挙動はやはり仕様書で定義されていません。
+
+| 名前 | 説明 |
+| --- | --- |
+| InitializeEnvironment | 自身のmodule Environment Recordを初期化する。 |
+| ExecuteModule | 自身を実行する。 |
+
+これらはLink及びEvaluateと類似していますが、「依存先」への言及が無くなりました。実は、Cyclic Module RecordのLink・Evaluateメソッドの挙動は仕様書内で定義されています（[15.2.1.16.1 Link () Concrete Method](https://tc39.es/ecma262/#sec-moduledeclarationlinking)・[15.2.1.16.2 Evaluate () Concrete Method](https://tc39.es/ecma262/#sec-moduleevaluation)）。依存先の取り扱いはここで定義されていますが、自分自身に関する処理がInitializeEnvironment・ExecuteModuleとして切り出され、未定義のままとなっています。
+
+JavaScriptプログラムで定義されたモジュールであるSource Text Module Recordの場合は、InitializeEnvironmentとExecuteModuleの挙動も仕様書内で定義されているため、モジュールの初期化・実行が全て仕様書で明示的に定義されていることになります。
+
+## Module Recordはどう作られるのか
+
+ここまでは、仕様書でモジュールから成るプログラムの実行を定義する際にはModule Recordという概念が登場すること、そしてModule Recordはその具体性（挙動がどれだけ仕様書で定義されているか）に応じて3段階存在することを解説しました。
+
+仕様書ではModule Recordが取り扱われるアルゴリズムが定義されていますが、それが実行されるためには当然ながらModule Recordが作られる必要があります。これを担当するのが、[HostResolveImportedModule](https://tc39.es/ecma262/#sec-hostresolveimportedmodule)抽象操作です。
+
+これはHostResolveImportedModule(*referencingScriptOrModule*, *specifier*) というシグネチャをしており、*specifier*というのがインポートされたモジュールを表す文字列です（`"./styles.css"`や`"https://example.net/foo.js"`など）。HostResolveImportedModuleの返り値は、*specifier*に対応するモジュールを表すModule Recordです（モジュールが存在しなかった場合など、失敗もあり得ます）。なお、JavaScript仕様ではspecifierについて「文字列である」ということのみが定められており、その形式については全く定義されていません。
+
+そして、名前にHostと入っていることから察せられるように、この操作の具体的な挙動は仕様書では定義されていません。代わりに、以下の制約が定められています。
+
+> The implementation of HostResolveImportedModule must conform to the following requirements:
+>
+> - The normal return value must be an instance of a concrete subclass of Module Record.
+> - If a Module Record corresponding to the pair referencingScriptOrModule, specifier does not exist or cannot be created, an exception must be thrown.
+> - Each time this operation is called with a specific referencingScriptOrModule, specifier pair as arguments it must return the same Module Record instance if it completes normally.
+
+HostというのはECMAScript仕様書の上位に位置する環境を指す言葉です。例えばHTML仕様書がその一つです。JavaScriptプログラムはHTML文書から呼び出される形で実行されることがありますが、その時の処理系（ウェブブラウザ）はECMAScript仕様書だけでなくHTML仕様書にも従わなければなりません。
+
+そして、HTML仕様書においては、HostResolveImportedModuleの具体的な挙動が定義されています（[8.1.3.8.1 HostResolveImportedModule(referencingScriptOrModule, specifier)](https://html.spec.whatwg.org/multipage/webappapis.html#hostresolveimportedmodule(referencingscriptormodule,-specifier))）。ブラウザがJavaScriptを実行する際は、モジュールの実行はこれに従うことになります。
+
+一方、これ以外のHostも考えられます。例えば、node.jsやdenoです。これらも`import`文に対応していますが、その挙動はブラウザ上のJavaScriptと同じではありません。そもそも、ブラウザの場合は依存先のモジュールがウェブから読み込まれますが、node.jsやdenoでは必ずしもそうではなく、ファイルシステムから読み込まれる可能性もあれば、処理系に内包されたモジュールが読み込まれるかもしれません。そうなれば、HostResolveImportedModuleの挙動は必然的に変わります。ただ、これらの場合はHostResolveImportedModuleの具体的な挙動がどこかに定められているわけではありません。「node.js仕様書」や「deno仕様書」のようなものは無いからですね。
+
+そして、Webpackを用いて`import`文を処理する場合は、HostとなるのはWebpackです。ですから、モジュール名を見てどんなModule Recordを返すかというのはWebpackの自由です。この点により、「cssファイルを読み込んだらAbstract Module Recordが得られる」という挙動が正当化されます。
+
+### HostResolveImportedModuleが使用されている箇所
+
+HostResolveImportedModuleは何箇所かで使われていますが、実際にモジュール解決のために使われるのは[Cyclic Module RecordのLink()メソッド](https://tc39.es/ecma262/#sec-moduledeclarationlinking)内です。
+
+Cyclic Module Recordは依存先のモジュールという概念を持つModule Recordでしたので、そのLink()の挙動はおおよそ次のようになります（やや厳密性に欠ける説明ではありますが）。
+
+- 自身が依存する先のモジュールを全てHostResolveImportedModuleで取得し、それぞれに対してLink()を実行する。
+- その後、自身のInitializeEnvironment()を呼び出して自身のスコープを初期化する。
+
+Linkというフェーズはモジュールの依存グラフを作る段階だったことを思い出せば、その処理の一部として依存解決が行われるのはとても自然ですね。
+
+### HostResolveImportedModuleで起こること
+
+HostResolveImportedModuleは漠然と「Module Recordを返す」とされていて具体的な仕様は定義されていませんでしたが、もう少し注意して仕様書を読み解けばHostResolveImportedModuleに対する“暗黙の要求”が見えてきます。
+
+実は、Cyclic Module Recordは[[RequestedModules]]という内部スロットを持っています（[Table 40: Additional Fields of Cyclic Module Records](https://tc39.es/ecma262/#table-cyclic-module-fields)）。これは、そのモジュールから依存されているモジュールのspecifierのリストです。例えば次のJavaScriptプログラムが表すモジュールの[[RequestedModules]]は`["./styles.css"]`となるでしょう（JavaScriptプログラムはSource Text Module Recordですが、それはCyclic Module Recordの一種であることを思い出しましょう）。
+
+```js
+import styles from "./styles.css";
+```
+
+そして、HostResolveImportedModuleによってCyclic Module Recordが作られた場合、その時点で[[RequestedModules]]がすでに存在していなければいけません。そして、一般に、モジュールの依存先を知るためには、例えばJavaScriptプログラムの場合はそのプログラムをパースしなければいけません。JavaScriptプログラム以外のモジュールの場合でもだいたい事情は同じでしょう。
+
+これが意味することは、HostResolveImportedModuleはモジュールを読み込んでパースまで済ませてしまうという役目を必然的に持っているということです。
+
+また、Abstract Module RecordがGetExportedNamesメソッドを持っていることを思い出せば、「エクスポートされた名前の一覧」もHostResolveImportedModuleの処理の一部として判明していなければいけません。JavaScriptプログラムではエクスポートされた名前は必ず`export`文で明示的に示されていますから、いずれにせよプログラムをパースするだけでエクスポートされた名前の一覧は取得可能です。
+
+一応JavaScriptプログラム以外の例にも触れておきましょう。Webpackの`style-loader`や`css-loader`を用いるとCSSファイルをモジュールとして読み込めるようになりますが、この場合は次のようにdefaultエクスポートからオブジェクトを得ることができます。
+
+```js
+import styles from "./styles.css";
+```
+
+ということは、このモジュールは常に`default`という名前ひとつをエクスポートしていることになりますから、事前に分かっているということで上記の条件は問題なくクリアできます。
+
+## 余談：CommonJSモジュールについて
+
+Webpackやnode.jsは、CommonJS（`exports.foo = ...`）で書かれたモジュールを`import`文でインポートすることができます。CommonJSモジュールの扱いについては両者で異なります。
+
+まず、Webpackは`module.exports`オブジェクト以下に作られたプロパティをインポートすることができます。
+
+```js
+// commonjs.js
+exports.cjs = "cjs";
+
+// index.js
+import { cjs } from "./commonjs.js";
+
+console.log(cjs); // "cjs" と表示される
+```
+
+また、default importで`module.exports`全体を取得できます。
+
+```js
+// commonjs.js
+exports.cjs = "cjs";
+
+// index.js
+import cjs from "./commonjs.js";
+
+console.log(cjs); // { cjs: "cjs" } と表示される
+```
+
+一方で、node.jsはCommonJSモジュールに対してはdefault importしか使用できません。つまり、上の2つの例のうち1番目の例はnode.jsでは不可能で、2番目の例なら可能です。
+
+どうやら、2つの処理系（Host）の間でCommonJSモジュールの扱いが違うようですね。
+
+まず最初に述べるべきことは、**CommonJSモジュールはSource Text Module Recordを作らない**ということです。Source Text Module RecordはJavaScriptで書かれたモジュールのModule Recordであると述べましたが、それはES Modulesで書かれているならの話です。CommonJSモジュールは当然ながらES Modulesで書かれていないので、仕様上はSource Text Module Recordとして扱われません。では何なのかというのは不明ですが（Webpackやnode.jsの挙動を記述する仕様書は無いので）、恐らくはCyclic Module Recordですらなく、Abstract Module Recordとして扱うのが最も妥当でしょう。その理由は、CommonJSモジュールからは`require`で動的にモジュールをインポートできますが、それはES Modulesの静的な依存解決プロセス（全ての依存を解決してからモジュールを実行する）に載らないからです。
+
+動的といえば、CommonJSモジュールにおいては何がエクスポートされているのかも動的に決まります。というのも、実行してみないと`exports`にどんなプロパティが作られたのか分かりません。Webpackの場合は、そのようなものも`import { cjs } from "./commonjs.js";`のような名前ベースの`import`が可能でした。
+
+これは「実行する前にエクスポートされた名前の一覧が判明している」という原則に反しているように思われるため、筆者はWebpackがECMAScript仕様にこの点で違反しているのではないかと疑っていました。しかし、慎重に検討した結果、どうやらWebpackはCommonJSの取り扱いに関してECMAScript仕様違反をぎりぎり回避しているのではないかと思われます。具体的には、GetExportedNamesは`["default"]`のみを返しつつResolveExportは任意の名前を受け付けるという荒業によって仕様を守ったままCommonJSモジュールをあのように取り扱っています。これはグレーな取り扱いに見えますが、仕様書にこれを明確に禁止する記述は見つけられませんでしたので、恐らくギリギリセーフではないかと思います。
+
+一方、node.jsではCommonJSは常に`default`エクスポートのみを持つとしており、これは仕様準拠の観点からはまったく潔白です。
+
+## 結論
+
+この記事では「**import文で画像やCSSを読み込むのはECMAScript仕様違反か**」という問題を題材にしてECMAScriptにおけるモジュールの取り扱いについて開設しました。問題に対する答えは「**仕様違反ではない**」となります。その理由は、JavaScriptプログラムで書かれたモジュール以外のモジュールであってもAbstract Module RecordやCyclic Module Recordとして取り扱えるような仕様になっているからです。また、実際にモジュールを読み込む部分であるHostResolveImportedModuleの実装がHostに委ねられていることによって、読み込まれたモジュールをどのModule Recordとして表すのかにおける裁量が処理系に与えられています。これにより、例えばCSSファイルを読み込んだらAbstract Module Recordになるといった処理が実際に正当化されるのです。
