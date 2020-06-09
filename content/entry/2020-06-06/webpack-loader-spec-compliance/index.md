@@ -188,4 +188,4 @@ console.log(cjs); // { cjs: "cjs" } と表示される
 
 ## 結論
 
-この記事では「**import文で画像やCSSを読み込むのはECMAScript仕様違反か**」という問題を題材にしてECMAScriptにおけるモジュールの取り扱いについて開設しました。問題に対する答えは「**仕様違反ではない**」となります。その理由は、JavaScriptプログラムで書かれたモジュール以外のモジュールであってもAbstract Module RecordやCyclic Module Recordとして取り扱えるような仕様になっているからです。また、実際にモジュールを読み込む部分であるHostResolveImportedModuleの実装がHostに委ねられていることによって、読み込まれたモジュールをどのModule Recordとして表すのかにおける裁量が処理系に与えられています。これにより、例えばCSSファイルを読み込んだらAbstract Module Recordになるといった処理が実際に正当化されるのです。
+この記事では「**import文で画像やCSSを読み込むのはECMAScript仕様違反か**」という問題を題材にしてECMAScriptにおけるモジュールの取り扱いについて解説しました。問題に対する答えは「**仕様違反ではない**」となります。その理由は、JavaScriptプログラムで書かれたモジュール以外のモジュールであってもAbstract Module RecordやCyclic Module Recordとして取り扱えるような仕様になっているからです。また、実際にモジュールを読み込む部分であるHostResolveImportedModuleの実装がHostに委ねられていることによって、読み込まれたモジュールをどのModule Recordとして表すのかにおける裁量が処理系に与えられています。これにより、例えばCSSファイルを読み込んだらAbstract Module Recordになるといった処理が実際に正当化されるのです。
