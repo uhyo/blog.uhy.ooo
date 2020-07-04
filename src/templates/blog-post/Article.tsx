@@ -1,20 +1,40 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { graphql, useStaticQuery } from "gatsby"
 import React from "react"
 import styled from "styled-components"
 import { ArticleDate } from "../../components/ArticleDate"
 import { Tags } from "../../components/Tags"
 import { MarkdownRemark } from "../../types/article"
-import { rhythm, scale } from "../../utils/typography"
+import { SiteMetadata } from "../../types/siteMetadata"
 import { grayColor } from "../../utils/color"
+import { rhythm, scale } from "../../utils/typography"
 
 type Props = {
   className?: string
+  slug: string
   post: Pick<
     MarkdownRemark<"title" | "published" | "updated" | "tags">,
     "frontmatter" | "html"
   >
 }
 
-const ArticleInner: React.FC<Props> = ({ className, post }) => {
+const ArticleInner: React.FC<Props> = ({ className, post, slug }) => {
+  const { site } = useStaticQuery<{
+    site: {
+      siteMetadata: Pick<SiteMetadata, "repo">
+    }
+  }>(
+    graphql`
+      query {
+        site {
+          siteMetadata {
+            repo
+          }
+        }
+      }
+    `
+  )
+
   return (
     <article className={className}>
       <header>
@@ -29,8 +49,17 @@ const ArticleInner: React.FC<Props> = ({ className, post }) => {
         ) : null}
       </header>
       <main dangerouslySetInnerHTML={{ __html: post.html }} />
+      <footer>
+        <FontAwesomeIcon icon={["fab", "github"]} />
+        <a
+          target="_blank"
+          href={`${site.siteMetadata.repo}/tree/master/content${slug}`}
+          rel="external noopener"
+        >
+          GitHubで見る（編集を提案）
+        </a>
+      </footer>
       <hr />
-      <footer></footer>
     </article>
   )
 }
@@ -53,6 +82,15 @@ export const Article = styled(ArticleInner)`
 
   & > main {
     margin-top: ${rhythm(0.5)};
+  }
+
+  & > footer {
+    margin-bottom: ${rhythm(0.5)};
+
+    a {
+      display: inline-block;
+      margin-left: ${rhythm(0.25)};
+    }
   }
 
   & > hr {

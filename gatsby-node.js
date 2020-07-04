@@ -105,11 +105,18 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
 
     const prefix = sourceInstanceName === "blog" ? "/entry" : "/tag"
 
-    const value = prefix + createFilePath({ node, getNode })
+    const fp = createFilePath({ node, getNode })
+    const value = prefix + fp
     createNodeField({
       name: `slug`,
       node,
       value,
+    })
+
+    createNodeField({
+      name: `filePath`,
+      node,
+      value: value + "index.md",
     })
   }
 }

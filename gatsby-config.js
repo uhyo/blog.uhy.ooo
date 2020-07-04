@@ -15,6 +15,7 @@ module.exports = {
       github: "uhyo",
       qiita: "uhyo",
     },
+    repo: "https://github.com/uhyo/blog.uhy.ooo",
   },
   plugins: [
     "gatsby-plugin-netlify-cache",

@@ -11,4 +11,5 @@ export type SiteMetadata = {
     twitter: string
     github: string
   }
+  repo: string
 }

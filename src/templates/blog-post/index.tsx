@@ -35,7 +35,7 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
       }
     >
       <SEO title={post.frontmatter.title} description={post.excerpt} />
-      <Article post={post} />
+      <Article post={post} slug={post.fields.filePath} />
       <Nav previous={previous} next={next} />
     </Layout>
   )
@@ -55,6 +55,9 @@ export const pageQuery = graphql`
         published
         updated
         tags
+      }
+      fields {
+        filePath
       }
     }
   }

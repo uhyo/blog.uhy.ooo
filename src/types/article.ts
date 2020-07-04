@@ -28,5 +28,6 @@ export type MarkdownRemark<FrontmatterKeys extends keyof Frontmatter> = {
   frontmatter: Pick<Frontmatter, FrontmatterKeys>
   fields: {
     slug: string
+    filePath: string
   }
 }
