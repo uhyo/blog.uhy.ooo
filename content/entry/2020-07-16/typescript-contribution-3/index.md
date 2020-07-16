@@ -8,6 +8,9 @@ tags:
 
 最近TypeScript本体にPull Requestを出してマージしてもらいましたので、内容や感想を紹介します。
 今回の内容はTypeScript 4.0に含まれる見込みです。
+Pull Requestはこちらです。
+
+- https://github.com/microsoft/TypeScript/pull/39570
 
 なお、筆者によるTypeScriptへの貢献はこれが3回目となります。
 1回目については以下の記事で紹介しています。
