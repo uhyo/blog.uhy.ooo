@@ -28,7 +28,8 @@ pre[class*="language-"] {
   text-align: left;
   white-space: pre;
   word-spacing: normal;
-  word-break: normal;
+  word-break: break-all;
+  overflow-wrap: break-word;
   word-wrap: normal;
   font-family: Roboto Mono, monospace;
   font-size: 1em;
