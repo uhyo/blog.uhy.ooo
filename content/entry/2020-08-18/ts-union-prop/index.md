@@ -92,9 +92,9 @@ function useFooOrBar(obj: FooOrBar) {
 このように、存在しないプロパティを明示するために`プロパティ?: undefined`とするのは便利な小技です。
 使いこなしましょう。
 
-## TypeScriptにおける対応
+## TypeScriptコンパイラによる対応
 
-ちなみに、このテクニックはTypeScriptにおける型推論にも組み込まれています。
+ちなみに、このテクニックはTypeScriptコンパイラによる型推論にも組み込まれています。
 次のような関数`getFooOrBar`を作った場合を考えてみます。
 
 ```ts
