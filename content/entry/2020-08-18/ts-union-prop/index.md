@@ -1,6 +1,7 @@
 ---
 title: TypeScriptのユニオン型で「あるかもしれない」プロパティを表現するときのTips
 published: "2020-08-18T21:15+09:00"
+updated: "2020-08-19T10:00+09:00"
 tags:
   - TypeScript
 ---
@@ -122,3 +123,53 @@ console.log(res.foo);
 ## まとめ
 
 コーディングの快適性まで考えて型定義を書けるようになって、一段上のTypeScript使いを目指しましょう！
+
+## 補足: `in`による絞り込みについて
+
+TypeScriptに詳しい読者の方はお気づきかもしれませんが、実は冒頭の「`obj.foo`にアクセスできない」問題については`in`を使って解決する方法もあります。
+
+```ts
+type FooObj = { foo: string };
+type BarObj = { bar: number };
+type FooOrBar = FooObj | BarObj;
+
+function useFooOrBar(obj: FooOrBar) {
+  if ('foo' in obj) {
+    // ここではobjの方がFooObjに絞り込まれる
+    console.log(obj.foo);
+  }
+}
+```
+
+この`'foo' in obj`という式は、`obj`が（ランタイムに）`foo`というプロパティを持つかどうかを判定する式です。
+こうすると、TypeScriptが`in`を見て型を絞り込んでくれるため、if文の中では`obj`が`FooObj`型になり`obj.foo`というアクセスが可能になります。
+
+しかし、残念ながら**型の絞り込みのために`in`を使用するのはおすすめしません**。
+なぜなら、**TypeScriptコンパイラが判断を間違い、型安全性が損なわれる恐れがあるから**です。
+具体的には次のような場合です。
+
+```ts
+type FooObj = { foo: string };
+type BarObj = { bar: number };
+type FooOrBar = FooObj | BarObj;
+
+function useFooOrBar(obj: FooOrBar) {
+  if ('foo' in obj) {
+    // ここではobjの方がFooObjに絞り込まれる
+    console.log(obj.foo);
+    // obj.fooはstring型なのでstring型のメソッドが使用可能
+    obj.foo.slice(0, 10);
+  }
+}
+
+// o はFooObjではなくBarObj型
+const o = { foo: 123, bar: 456 };
+// しかし間違ってFooObjと判定されてランタイムエラーが発生！
+useFooOrBar(o);
+```
+
+ここに潜む罠は、先ほど解説した通り、この定義だと`BarObj`が`foo`プロパティを持たないとは限らないという点にあります。
+`'foo' in obj`は`obj`が`FooObj`かどうかを確実に判定できる式ではないのです。
+それにも関わらずTypeScriptコンパイラが型の絞り込みを行なってしまうのが微妙な点です。
+
+以上の理由から、`in`を型の絞り込みに使うのはお勧めしません。
