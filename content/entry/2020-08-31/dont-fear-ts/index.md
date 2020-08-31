@@ -508,7 +508,7 @@ const c = await getUserInput<never>({ optional: false as never })
 ```
 
 変数`a`の場合、つまり`IsOptional`が`boolean`である場合は、渡された`optional`が`true`なのか`false`なのか型のロジックからは分からない状況となります。
-よって、`true`の可能性もあると判断して結果が`string | undefinde`となるのが適切です。
+よって、`true`の可能性もあると判断して結果が`string | undefined`となるのが適切です。
 上の例はそうなっていますね。
 渡されたのが`any`の場合も同様です。
 
