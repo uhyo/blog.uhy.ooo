@@ -385,7 +385,7 @@ function convertToNumberAll3<A extends readonly string[]>(
 
 ここで皆さんに理解していただきたいのは、型定義を書くというのも関数の実装における重要なステップであるということです。
 そして、**型定義もまたロジックを書く作業である**ということです。
-そして、正確ななロジックを書くために重宝される道具がまさにmapped typesやconditional typesなのです。
+そして、正確なロジックを書くために重宝される道具がまさにmapped typesやconditional typesなのです。
 
 ## ケーススタディ: 条件分岐を含む型のロジック
 
