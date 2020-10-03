@@ -174,7 +174,8 @@ export const AppStyle = html`
 
 ## まとめ
 
-Web ComponentsをCSS in JSに活用するという発想と、それを形にした筆者作のライブラリ`react-wc`を紹介しました。
+Web ComponentsをCSS in JSに活用するという発想と、それを形にした筆者作のライブラリ[react-wc](https://github.com/uhyo/react-wc)を紹介しました。
 ReactのCSS in JSに絶対的な解がないというのが定説とされる現状において、新たな形を提示できたのではないかと思います。
+サンプルもreact-wcのリポジトリに含まれていますので、興味がある方は触ってみてください。
 
 似たような発想の既存ライブラリとして[react-shadow](https://github.com/Wildhoney/ReactShadow)がありますが、`react-wc`ではShadow DOMをReactが管理する仮想DOMツリーに入れずに、コンポーネント定義の一部として扱うという決定的な違いがあります。
