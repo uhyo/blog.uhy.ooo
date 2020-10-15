@@ -45,11 +45,11 @@ ResolveThisBinding()の定義はこうです。
 GetThisEnvironment()の定義はこうです。
 
 > 1. Let env be the running execution context's LexicalEnvironment.
-> 2. Repeat,<br>
-> a. Let *exists* be env.HasThisBinding().<br>
-> b. If *exists* is true, return *env*.<br>
-> c. Let *outer* be *env*.[[OuterEnv]].<br>
-> d. Assert: *outer* is not null.<br>
+> 2. Repeat,<br />
+> a. Let *exists* be env.HasThisBinding().<br />
+> b. If *exists* is true, return *env*.<br />
+> c. Let *outer* be *env*.[[OuterEnv]].<br />
+> d. Assert: *outer* is not null.<br />
 > e. Set *env* to *outer*.
 
 定義にループが登場しましたね。このように、仕様書では関数や抽象操作の挙動が自然言語で表現されます。ポイントは、ここで[running execution context](https://tc39.es/ecma262/#running-execution-context)という概念が登場したことです。これはプログラムの実行状態の情報を持っている仕様書上の存在であり、ここではそこからLexicalEnvironmentを取り出して*env*に入れています。
