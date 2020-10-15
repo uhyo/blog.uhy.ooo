@@ -30,7 +30,7 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
       rightSide={
         <>
           <Bio />
-          <TOC tableOfContents={post.tableOfContents} />
+          <TOC tableOfContents={post.tableOfContents.items} />
         </>
       }
     >

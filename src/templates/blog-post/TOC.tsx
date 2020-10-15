@@ -1,10 +1,36 @@
 import React from "react"
 import styled from "styled-components"
+import { TableOfContentsItem } from "../../types/article"
 import { mainColor } from "../../utils/color"
 import { rhythm, scale } from "../../utils/typography"
 
+const TOCItem: React.FunctionComponent<{
+  item: TableOfContentsItem
+}> = ({ item }) => {
+  if (item.items) {
+    return (
+      <li>
+        <p>
+          <a href={item.url}>{item.title}</a>
+        </p>
+        <ul>
+          {item.items.map(i => (
+            <TOCItem key={i.url} item={i} />
+          ))}
+        </ul>
+      </li>
+    )
+  } else {
+    return (
+      <li>
+        <a href={item.url}>{item.title}</a>
+      </li>
+    )
+  }
+}
+
 type Props = {
-  tableOfContents: string
+  tableOfContents?: TableOfContentsItem[]
   className?: string
 }
 
@@ -13,10 +39,13 @@ const TOCInner: React.FunctionComponent<Props> = ({
   className,
 }) => {
   return (
-    <nav
-      className={className}
-      dangerouslySetInnerHTML={{ __html: tableOfContents }}
-    />
+    <nav className={className}>
+      <ul>
+        {tableOfContents?.map(item => (
+          <TOCItem key={item.url} item={item} />
+        ))}
+      </ul>
+    </nav>
   )
 }
 

@@ -24,10 +24,18 @@ export type Mdx<FrontmatterKeys extends keyof Frontmatter> = {
   id: string
   excerpt: string
   body: string
-  tableOfContents: string
+  tableOfContents: {
+    items?: TableOfContentsItem[]
+  }
   frontmatter: Pick<Frontmatter, FrontmatterKeys>
   fields: {
     slug: string
     filePath: string
   }
+}
+
+export type TableOfContentsItem = {
+  url: string
+  title: string
+  items?: TableOfContentsItem[]
 }
