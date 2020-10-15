@@ -1,0 +1,150 @@
+---
+title: "まとまったCSSを別のコンポーネントに分けないでほしい話"
+published: "2020-10-15T22:30+09:00"
+tags:
+  - React
+---
+
+この記事は、ReactでCSSを書くときに**関連したCSSを別々のコンポーネントに分けるのをやめよう**という記事です。主な理由は、スタイリングという機能が複数コンポーネントに分散するのを防ぐためです。これには修正時に複数コンポーネントにまたがって修正が必要になるのを防ぐという意味もあります。
+
+## Flexboxの例
+
+関連したCSSが複数の要素に分かれることはよくあります。その代表例が`display: flex`です。例えばこんなレイアウトを考えてみましょう。左側のボックスの幅が決まっていて右側の幅が可変の2カラムレイアウトです。
+
+<div style={{ display: "flex", height: "40vh" }}>
+  <div style={{ flex: "100px 0 0", padding: "10px", backgroundColor: "silver" }}>
+    左のカラム (100px)
+  </div>
+  <div style={{ flex: "auto 1 0", padding: "10px", backgroundColor: "#ffddcc" }}>
+    右のカラム
+  </div>
+</div>
+
+このレイアウトはおおよそ次のように実現できます。
+
+```css
+/* 親要素 */
+display: flex;
+
+/* 子要素（左） */
+flex: 100px 0 0;
+
+/* 子要素（右） */
+flex: auto 1 0;
+```
+
+では、Reactではどのように書くでしょうか。CSS in JSの方法は何でもいいのですが、ここではstyled-componentsを用いて書いてみます。
+
+### だめな例
+
+まず、やりがちですが**だめな例**です。
+
+```tsx
+const Wrapper = styled(({ className }) =>
+  <div className={className}>
+    <LeftColumn />
+    <RightColumn />
+  </div>
+)`
+  display: flex;
+`
+
+const LeftColumn = styled(({ className }) =>
+  <div className={className}>
+    左のカラム (100px)
+  </div>
+)`
+  flex: 100px 0 0;
+  padding: 10px;
+`
+
+const RightColumn = styled(({ className }) =>
+  <div className={className}>
+    右のカラム
+  </div>
+)`
+  flex: auto 1 0;
+  padding: 10px;
+`
+```
+
+なぜだめなのかと言えば、2カラムレイアウトを実現するために必要なCSSが複数のコンポーネントに分散しているからです。
+これだとスタイルの全体像を把握するために3つのコンポーネントを読む必要があり、修正時、例えば`display: flex`をやめて`display: grid`にしたい場合、3つのコンポーネント全てを編集する必要があります。
+
+### 良い例
+
+この場合、次のようにすべきです。
+
+```tsx
+const Wrapper = styled(({ className }) =>
+  <div className={className}>
+    <div>
+      <LeftColumn />
+    </div>
+    <div>
+      <RightColumn />
+    </div>
+  </div>
+)`
+  display: flex;
+
+  & > div:first-child {
+    flex: 100px 0 0;
+  }
+
+  & > div:last-child {
+    flex: auto 1 0;
+  }
+`
+
+const LeftColumn = styled(({ className }) =>
+  <div className={className}>
+    左のカラム (100px)
+  </div>
+)`
+  padding: 10px;
+`
+
+const RightColumn = styled(({ className }) =>
+  <div className={className}>
+    右のカラム
+  </div>
+)`
+  padding: 10px;
+`
+```
+
+これならば、2カラムレイアウトに必要なCSSは全て`Wrapper`に属しており、`LeftColumn`や`RightColumn`はカラムの中身に集中しています。責務の観点からもこのようにCSSを分割する方が適切です。
+
+ところで、元々の例に比べるとこちらは`div`の層が一つ増えていますね。次のようにするのはだめなのかと思われるかもしれません。
+
+```tsx
+const Wrapper = styled(({ className }) =>
+  <div className={className}>
+    <LeftColumn />
+    <RightColumn />
+  </div>
+)`
+  display: flex;
+
+  & > div:first-child {
+    flex: 100px 0 0;
+  }
+
+  & > div:last-child {
+    flex: auto 1 0;
+  }
+`
+```
+
+しかし、これは悪手です。なぜなら、これは、`LeftColumn`や`RightColumn`が`div`をレンダリングするということに依存しているからです。すなわち、`Wrapper`の実装が`LeftColumn`や`RightColumn`の内部実装に依存している形になり、好ましくありません。
+
+また、`& > *:first-child { ... }`のようにするのも同様に避けるべきです。これは`LeftColumn`などが`div`ではなく何をレンダリングしても対応できるように思えますが、`LeftColumn`などが要素を一つだけレンダリングするということに依存してしまっています（`Fragment`を用いれば一つのコンポーネントが複数の要素をレンダリングすることができます）。
+
+最初の例のように`Wrapper`の中で`div`の層を作ることで、スタイリングが自身の中で完結したコンポーネントとすることができます。
+
+## まとめ
+
+ReactでCSSを書くときはコンポーネント間の依存を発生させないように書きましょう。
+
+余談ですが、筆者が最近作った[react-wc](https://blog.uhy.ooo/entry/2020-10-03/react-wc/)はこれを促進する設計になっています。ぜひ使ってみてください（宣伝）。
