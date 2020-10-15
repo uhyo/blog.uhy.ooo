@@ -1,13 +1,13 @@
 import { graphql, Link } from "gatsby"
 import React from "react"
 import styled from "styled-components"
-import { MarkdownRemark } from "../../types/article"
+import { Mdx } from "../../types/article"
 import { rhythm, scale } from "../../utils/typography"
 import { ArticleDate } from "../ArticleDate"
 import { Tags } from "../Tags"
 
 export type ArticleListItemData = Pick<
-  MarkdownRemark<"title" | "published" | "updated" | "tags">,
+  Mdx<"title" | "published" | "updated" | "tags">,
   "fields" | "frontmatter" | "excerpt"
 >
 
@@ -74,7 +74,7 @@ export const ArticleListItem = styled(ArticleListItemInner)`
 `
 
 export const query = graphql`
-  fragment ArticleInList on MarkdownRemark {
+  fragment ArticleInList on Mdx {
     excerpt
     fields {
       slug

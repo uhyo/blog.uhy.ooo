@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { graphql, useStaticQuery } from "gatsby"
+import { MDXRenderer } from "gatsby-plugin-mdx"
 import React from "react"
 import styled from "styled-components"
 import { ArticleDate } from "../../components/ArticleDate"
 import { Tags } from "../../components/Tags"
-import { MarkdownRemark } from "../../types/article"
+import { Mdx } from "../../types/article"
 import { SiteMetadata } from "../../types/siteMetadata"
 import { grayColor } from "../../utils/color"
 import { rhythm, scale } from "../../utils/typography"
@@ -13,8 +14,8 @@ type Props = {
   className?: string
   slug: string
   post: Pick<
-    MarkdownRemark<"title" | "published" | "updated" | "tags">,
-    "frontmatter" | "html"
+    Mdx<"title" | "published" | "updated" | "tags">,
+    "frontmatter" | "body"
   >
 }
 
@@ -48,7 +49,9 @@ const ArticleInner: React.FC<Props> = ({ className, post, slug }) => {
           </div>
         ) : null}
       </header>
-      <main dangerouslySetInnerHTML={{ __html: post.html }} />
+      <main>
+        <MDXRenderer>{post.body}</MDXRenderer>
+      </main>
       <footer>
         <FontAwesomeIcon icon={["fab", "github"]} />
         <a

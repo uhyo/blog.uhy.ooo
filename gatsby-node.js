@@ -8,7 +8,7 @@ const createEntryPages = async (graphql, actions) => {
   const result = await graphql(
     `
       {
-        allMarkdownRemark(
+        allMdx(
           sort: { fields: [frontmatter___published], order: DESC }
           limit: 1000
           filter: { fields: { sourceFileType: { eq: "blog" } } }
@@ -33,7 +33,7 @@ const createEntryPages = async (graphql, actions) => {
   }
 
   // Create blog posts pages.
-  const posts = result.data.allMarkdownRemark.edges
+  const posts = result.data.allMdx.edges
 
   posts.forEach((post, index) => {
     const previous = index === posts.length - 1 ? null : posts[index + 1].node
@@ -57,7 +57,7 @@ const createTagPages = async (graphql, actions) => {
 
   const result = await graphql(`
     {
-      allMarkdownRemark {
+      allMdx {
         group(field: frontmatter___tags) {
           tag: fieldValue
           totalCount
@@ -70,7 +70,7 @@ const createTagPages = async (graphql, actions) => {
     throw result.errors
   }
 
-  const tags = result.data.allMarkdownRemark.group
+  const tags = result.data.allMdx.group
 
   for (const { tag } of tags) {
     const slug = `/tag/${tag}/`
@@ -93,7 +93,7 @@ exports.createPages = async ({ graphql, actions }) => {
 exports.onCreateNode = ({ node, actions, getNode }) => {
   const { createNodeField } = actions
 
-  if (node.internal.type === `MarkdownRemark`) {
+  if (node.internal.type === `Mdx`) {
     // parent node is from gatsby-source-filesystem
     const parent = getNode(node.parent)
     const { sourceInstanceName } = parent
@@ -116,7 +116,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
     createNodeField({
       name: `filePath`,
       node,
-      value: value + "index.md",
+      value: value + "index.mdx",
     })
   }
 }

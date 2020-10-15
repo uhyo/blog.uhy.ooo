@@ -1,12 +1,12 @@
 import styled from "styled-components"
 import React from "react"
-import { MarkdownRemark } from "../../types/article"
+import { Mdx } from "../../types/article"
 import { Link } from "gatsby"
 
 type Props = {
   className?: string
-  previous?: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
-  next?: Pick<MarkdownRemark<"title">, "fields" | "frontmatter">
+  previous?: Pick<Mdx<"title">, "fields" | "frontmatter">
+  next?: Pick<Mdx<"title">, "fields" | "frontmatter">
 }
 
 const NavInner: React.FunctionComponent<Props> = ({

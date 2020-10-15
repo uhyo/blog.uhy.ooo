@@ -10,7 +10,7 @@ import SEO from "../components/seo"
 
 type Props = {
   data: {
-    allMarkdownRemark: {
+    allMdx: {
       edges: Array<{
         node: ArticleListItemData
       }>
@@ -19,7 +19,7 @@ type Props = {
 }
 
 const BlogIndex: React.FC<Props> = ({ data }) => {
-  const posts = data.allMarkdownRemark.edges
+  const posts = data.allMdx.edges
 
   return (
     <Layout title="" slug="/" rightSide={<Bio />}>
@@ -35,7 +35,7 @@ export default BlogIndex
 
 export const pageQuery = graphql`
   query {
-    allMarkdownRemark(
+    allMdx(
       sort: { fields: [frontmatter___published], order: DESC }
       filter: { fields: { sourceFileType: { eq: "blog" } } }
     ) {

@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { graphql } from "gatsby"
+import { MDXRenderer } from "gatsby-plugin-mdx"
 import React from "react"
 import {
   ArticleListItem,
@@ -11,10 +12,10 @@ import Bio from "../../components/bio"
 
 type Props = {
   data: {
-    markdownRemark: {
-      html: string
+    mdx: {
+      body: string
     } | null
-    allMarkdownRemark: {
+    allMdx: {
       edges: Array<{
         node: ArticleListItemData
       }>
@@ -27,8 +28,8 @@ type Props = {
 }
 
 const TagPageTemplate: React.FC<Props> = ({ data, pageContext }) => {
-  const tagDescHtml = data.markdownRemark?.html
-  const posts = data.allMarkdownRemark.edges
+  const tagDescBody = data.mdx?.body
+  const posts = data.allMdx.edges
   const { tag, slug } = pageContext
 
   const title = `タグ: ${tag}`
@@ -39,13 +40,11 @@ const TagPageTemplate: React.FC<Props> = ({ data, pageContext }) => {
         <FontAwesomeIcon icon="tags" aria-label="タグ" />
         {tag}
       </h1>
-      {tagDescHtml && (
+      {tagDescBody && (
         <>
-          <main
-            dangerouslySetInnerHTML={{
-              __html: tagDescHtml,
-            }}
-          />
+          <main>
+            <MDXRenderer>{tagDescBody}</MDXRenderer>
+          </main>
           <hr />
         </>
       )}
@@ -60,10 +59,10 @@ export default TagPageTemplate
 
 export const pageQuery = graphql`
   query($tag: String, $slug: String) {
-    markdownRemark(fields: { slug: { eq: $slug } }) {
-      html
+    mdx(fields: { slug: { eq: $slug } }) {
+      body
     }
-    allMarkdownRemark(
+    allMdx(
       sort: { fields: [frontmatter___published], order: DESC }
       filter: {
         frontmatter: { tags: { in: [$tag] } }

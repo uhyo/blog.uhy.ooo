@@ -18,12 +18,12 @@ export type Frontmatter = {
 }
 
 /**
- * markdownRemark data
+ * mdx data
  */
-export type MarkdownRemark<FrontmatterKeys extends keyof Frontmatter> = {
+export type Mdx<FrontmatterKeys extends keyof Frontmatter> = {
   id: string
   excerpt: string
-  html: string
+  body: string
   tableOfContents: string
   frontmatter: Pick<Frontmatter, FrontmatterKeys>
   fields: {
