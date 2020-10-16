@@ -147,4 +147,29 @@ const Wrapper = styled(({ className }) =>
 
 ReactでCSSを書くときはコンポーネント間の依存を発生させないように書きましょう。
 
-余談ですが、筆者が最近作った[react-wc](https://blog.uhy.ooo/entry/2020-10-03/react-wc/)はこれを促進する設計になっています。ぜひ使ってみてください（宣伝）。
+### 余談: react-wcの宣伝
+
+上の例を見て、`> div:first-child`というのが物々しくて気に入らないと思った方が居るかもしれません。実は、筆者が最近作った[react-wc](https://blog.uhy.ooo/entry/2020-10-03/react-wc/)ならこの点を解決して次のようにクラスを使って書けます。Shadow DOMを使っているので`left`や`right`といったクラス名が他とかぶることは心配する必要がありません。いいねと思った方は試してみてください。
+
+```tsx
+const Wrapper = html`
+  <style>
+    :host {
+      display: flex;
+    }
+    .left {
+      flex: 100px 0 0;
+    }
+    .right {
+      flex: auto 1 0;
+    }
+  </style>
+  <div class="left">${slot("left")}</div>
+  <div class="right">${slot("right")}</div>
+`;
+
+<Wrapper
+  left={<LeftColumn />}
+  right={<RightColumn />}
+/>
+```
