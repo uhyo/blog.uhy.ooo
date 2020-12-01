@@ -1,5 +1,6 @@
 import styled from "styled-components"
 import FukidashiImg from "./fukidashi.png"
+import FukidashiWhiteImg from "./fukidashi-white.png"
 
 export const Fukidashi = styled.em`
   display: inline-block;
@@ -18,9 +19,15 @@ export const Fukidashi = styled.em`
     position: absolute;
     top: -24px;
     left: -24px;
-    border: 24px solid transparent;
+    /* border: 24px solid transparent; */
+    border-width: 24px;
+    border-style: solid;
     border-image: url(${FukidashiImg}) calc(100% / 3) / 24px space;
     transform: scale(0.5) translateY(4px);
     transform-origin: 24px 24px;
+
+    @media (prefers-color-scheme: dark) {
+      border-image-source: url(${FukidashiWhiteImg});
+    }
   }
 `
