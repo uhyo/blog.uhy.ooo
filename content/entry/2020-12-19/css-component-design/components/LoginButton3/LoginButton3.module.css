@@ -1,0 +1,26 @@
+@keyframes scaling {
+  from {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.button {
+  appearance: none;
+  width: 6em;
+  height: 2.5em;
+  border: 1px solid #55bb55;
+  border-radius: 3px;
+  box-shadow: 0 0 3px 3px #ddffdd;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ddffdd;
+  color: #004400;
+  animation: scaling ease 2s infinite;
+}

@@ -1,0 +1,42 @@
+.redButton {
+  background-color: #ffdddd;
+  border-color: #bb5555;
+  color: #440000;
+}
+
+.bigButton {
+  width: 12em;
+  height: 3em;
+  font-size: 2em;
+}
+
+@keyframes buttonMove {
+  from {
+    transform: translate(0, 0);
+  }
+  15% {
+    transform: translate(5em, -2em);
+  }
+  30% {
+    transform: translate(-2em, 3em);
+  }
+  40% {
+    transform: translate(0.5em, -0.5em);
+  }
+  55% {
+    transform: translate(-2em, -2em);
+  }
+  75% {
+    transform: translate(-3em, 4em);
+  }
+  90% {
+    transform: translate(-2em, 3em);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+.movingButton {
+  animation: buttonMove 0.4s ease infinite;
+}
