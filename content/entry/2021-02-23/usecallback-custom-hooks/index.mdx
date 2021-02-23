@@ -1,0 +1,183 @@
+---
+title: "useCallbackはとにかく使え！　特にカスタムフックでは"
+published: "2021-02-23T18:30+09:00"
+tags:
+  - React
+---
+
+Reactには、パフォーマンス最適化のためのAPIがいくつかあります。具体的には`React.memo`、`useMemo`、そして`useCallback`です。
+`React.memo`で囲まれた関数コンポーネントは、propsが以前と変わっていない場合に再レンダリングが抑制されます。
+また、`useMemo`や`useCallback`は、関数コンポーネント内での値の再計算を抑制する効果を持ちます。
+
+これらは最適化のためのツールなので、「過度な最適化」を避けるように啓蒙する言説がよく見られます。
+すなわち、ちゃんと本当に最適化のために必要なところにだけこれらを使おうということです。
+特に、`React.memo`はpropsが以前と変わっているかどうかを判定するためのオーバーヘッドがあるし、`useMemo`や`useCallback`もフック呼び出しのオーバーヘッドがあります。
+意味がないところで`React.memo`を使うと、オーバーヘッドによりむしろ悪影響があるかもしれません。
+
+……とは言っても、実際に無駄な`React.memo`の使用が悪影響になったという報告がデータ付きで上がっているのは、筆者は寡聞にして見たことがありません。
+この記事は、そんな井の中の蛙な筆者が`useCallback`とカスタムフックに焦点を当て、設計の観点から考察してみた記事です。
+
+結論は、**カスタムフックが関数を返すなら常に`useCallback`で囲め**です。
+
+## `useCallback`の意味
+
+まず、そもそも`useCallback`はどのような恩恵をもたらすのか簡単に説明します。
+`useCallback`は`useMemo`の亜種で、関数に特化しています。
+例えばこのように使えます。
+
+```tsx
+const App: React.VFC = () => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    console.log("clicked!");
+  }, []);
+
+  return (
+    <button onClick={handleClick}>button</button>
+  );
+};
+```
+
+`useCallback`は、初回の呼び出し（`App`の初回のレンダリング）では渡された関数をそのまま返します。
+よって、`handleClick`は`console.log("clicked!");`を実行する関数となります。
+`App`が再レンダリングされたとき、`useCallback`の返り値としては初回レンダリング時のときの関数オブジェクトが再利用されます（`useCallback`に渡された関数オブジェクトは今回は捨てられます）。
+つまり、`handleClick`は初回のレンダリング時も2回目のレンダリング時も同じ（`===`の意味で等しい）関数オブジェクトになります[^note_1]。
+`useCallback`を噛まさない場合は、`handleClick`は毎回新しく作られた関数オブジェクトとなるでしょう。
+
+[^note_1]: Reactでは、かならず毎回同じ関数オブジェクトになることが保証されているわけではなく、場合によってはメモ化されないかもしれないとされています。
+
+実は上の例の場合、`useCallback`は特にパフォーマンス上の意味はありません。
+`useCallback`が効いてくる典型的なケースは、`useCallback`の返り値の関数が`React.memo`が適用されたコンポーネントに渡されるような場合です[^note_2]。
+
+[^note_2]: 他の場合としては、関数が`useEffect`や`useMemo`などの依存リストに入る場合があります。
+
+```tsx
+const App: React.VFC = () => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    console.log("clicked!");
+  }, []);
+
+  return (
+    // 再レンダリング回避！
+    <SuperHeavyButton onClick={handleClick} />
+  );
+```
+
+このように、描画が重いので`React.memo`で囲まれた`SuperHeavyButton`があるとしましょう。
+この場合、`App`が再レンダリングされても`SuperHeavyButton`は再レンダリングされないでしょう。
+なぜなら、2回目のレンダリングでも`useCallback`の効果により、`handleClick`は1回目と同じ（`===`）関数オブジェクトとなります。
+よって、`react.memo`によって`SuperHeavyButton`の再レンダリングが抑制されます。
+もし`useCallback`が無かったら、`App`の再描画のたびに`SuperHeavyButton`も再描画されるでしょう。
+
+```tsx
+const App: React.VFC = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    console.log("clicked!");
+  };
+
+  return (
+    // 毎回再レンダリングされる……
+    <SuperHeavyButton onClick={handleClick} />
+  );
+```
+
+逆の見方をすれば、`useCallback`の使用に常に意味があるわけではないということです。
+このように、`React.memo`で囲われたコンポーネントに関数を渡すような場合でなければ`useCallback`が無駄ということになります。
+`useMemo`や`useCallback`の使用に慎重になる人はこのような無駄を気にしているのでしょう。
+
+## カスタムフックと`useCallback`
+
+次に、カスタムフックに目を向けてみましょう。
+カスタムフックとは、フックの呼びだしを含むロジックをまとめた関数であり、Reactに組み込みのフックと同様に`use`で始まる名前を付ける慣習があります。
+カスタムフックは`useState`や`useEffect`のようなReactと結びついたロジックを再利用可能な形で提供できるのが主な良い点です。
+
+例えば次のような実装の`useToggle`を考えてみましょう。
+
+```ts
+function useToggle(initialState: boolean): [boolean, () => void] {
+  const [state, setState] = useState(initialState);
+
+  const toggle = () => {
+    setState(b => !b);
+  };
+  return [state, toggle];
+}
+```
+
+これは、（`useState`を内部で呼び出していることからも分かるように）ステートを内包するフックで、そのステートは`boolean`型に固定されています。
+ステートそのもののほかに`toggle`関数を返しており、この関数はステートの真偽を反転させる関数です。
+
+この`useToggle`は`useState`と似たような感じで次のように使えるでしょう。
+
+```tsx
+const App: React.VFC = () => {
+  const [on, toggle] = useToggle(false);
+
+  return (
+    <SuperHeavyButton onClick={toggle}>
+      {on ? "ON" : "OFF"}
+    </SuperHeavyButton>
+  );
+};
+```
+
+`useToggle`のカスタムフックとしての意義は、より幅広い使い方が可能な`useState`を内包しつつ、特定の使い方にフォーカスすることによってより単純なインターフェース（引数なしで呼び出せる`toggle`関数）を提供している点にあります。
+
+ここで特に注目すべきは、**`useToggle`が関数`toggle`を返している**という点です。
+わざとらしく上のコード例で`toggle`を`SuperHeavyButton`に渡していますが、`useToggle`内でこの関数が毎回新規に生成されているため、`SuperHeavyButton`が毎回再レンダリングされてしまいます。
+
+この問題は、`useToggle`内で`useCallback`を使うことで回避できます[^note_3]。
+
+[^note_3]: 次の例で`useCallback`に渡す依存配列は`[]`としていますが、`useState`が返す`setState`は常に同じ関数オブジェクトであることが保証されているのでこれで問題ありません。
+
+```ts
+function useToggle(initialState: boolean): [boolean, () => void] {
+  const [state, setState] = useState(initialState);
+
+  const toggle = useCallback(() => {
+    setState(b => !b);
+  }, []);
+  return [state, toggle];
+}
+```
+
+そうなると、ここで問題が生じます。
+`useToggle`の中で`useCallback`を最初から使うべきなのか、それとも必要に駆られてから`useCallback`を付け足すべきなのかです。
+
+筆者の答えは、**最初から`useCallback`を使え**です。
+
+## カスタムフックと責務の分離
+
+カスタムフックを作る理由は、普通の関数を作る理由と全く同じであり、すなわち**責務の分離**とか**カプセル化**です。
+一度カスタムフックとして分離された以上、インターフェースの内側のことはカスタムフック内で完結すべきです。
+カスタムフックを使う側はカスタムフックの内側のことを知るべきではなく、その逆も然りです。
+
+つまり、`useToggle`が返す`toggle`関数が毎回変わる（＝使う側に再レンダリングを強制する）のか、それとも`useCallback`で囲まれていて基本的に変わらない（＝使う側は再レンダリングを抑制できる）のかは、`useToggle`の仕様の一部として`useToggle`側が決めることです。
+
+もしも「`useToggle`の返り値が毎回変わっていて`SuperHeavyButton`が再レンダリングされてしまい困るから`useToggle`に`useCallback`を追加した」というようなことが起こった場合は、それは`useToggle`を使う側の都合を鑑みて`useToggle`を仕様変更したということになります。
+つまり、`useToggle`をコンポーネントロジックから分離して再利用可能にしたつもりが、結局使う側に振り回されてしまい再利用可能になっていなかったということです。
+ご存知の通り、再利用可能性の低いものを無理に共通化し、そこにそれを使う側の都合を押し込んでいった場合、最終的にできるのはただのおいしいスパゲッティです。
+せっかくカスタムフックを作るのだから、再利用可能性と独立性が高いものにするべきです。
+
+簡単な言葉で言い直せば、結局のところ「返り値の関数は`useCallback`で囲んだほうがカスタムフックの汎用性が高くなるからそうしろ」ということです。
+場合によってはその`useCallback`が無駄になるかもしれませんが、観測できるかどうかも分からないオーバーヘッドよりは設計上の要請のほうを優先したいというのが筆者の考えです。
+
+また、カスタムフックのインターフェース上の意味を考えてみても、`useCallback`を使う方が妥当である場合が多いでしょう。
+例えば、Reactに組み込みの`useState`が返す関数（ステート更新関数）は毎回同じ関数であることが保証されています。
+その理由はこれまで述べてきた汎用性に係る要請に加えて、ステート更新関数は常に同じ処理をする関数である（状況によって処理内容が変わるものではない）ことも寄与していると考えられます。
+
+そもそもReactの世界では、「値が違う」（`===`ではない）ことが色々な処理のトリガーになります。
+`React.memo`もそうですし、`useState`やコンテキストなども“違う”値が入ることが再レンダリングを引き起こします。
+ですから、違わないものは違わないと明確にする（`===`になるようにする）ことには、単なるパフォーマンス最適化だけではなくロジック上の意味が付与されます。
+毎回違うものを返すということは、本当に毎回意味が異なるものを返していると受け取られます。
+少なくとも、返されたものを使う側はそのように扱わなければいけません。
+そうしないと、`useMemo`の依存リストを間違えて厄介なバグを生み出すことにも繋がりかねないからです。
+
+`useCallback`は絶対的な保証ではなく、同じものを返せる場面で違うものを返してしまうこともあるとされていますが、それでも多くの場合きちんとメモ化が働き同じものを返してくれます。
+それはそのまま、`useToggle`が必要のない限り同じ関数を返すというロジック上意味のある挙動に繋がっているのです。
+同じ意味のものを返すならば、`useCallback`の力を借りてきちんと同じものを返しましょう。
+
+## まとめ
+
+この記事では、カスタムフックから関数を返す場合に`useCallback`を使うべき理由を説明しました。
+カスタムフックは再利用性のために作られるものなので、より高い再利用性のためには`useCallback`が必要です。
+また、Reactでは値が同じであることにロジック上の意味が与えられるので、同じ意味の関数を返すときは極力オブジェクトとして同じ関数を返すべきです。
