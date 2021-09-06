@@ -1,0 +1,181 @@
+---
+title: 空のdiv要素について
+published: "2021-09-07T09:30+09:00"
+tags:
+  - HTML
+---
+
+昨日はこちらの記事に端を発する形で、空のdiv要素やspan要素は妥当なのかといった話題が見られました。
+
+- [中身のない空の div 要素や空の span 要素は HTML 仕様として妥当なのか？ - dskd](https://dskd.jp/archives/112.html)
+
+この記事は空のdiv要素やspan要素が妥当かどうかという疑問にHTML仕様の観点から考察を加える大変面白い記事です。記事の結論としては、“僕の結論としては「否」である。”としています。
+しかし、いくらHTML仕様を読んだといっても、こういった議論には解釈が入りがちです（こちらの記事でも結論の前に“ここからは完全に僕の解釈として書く。”と明記されています）。
+
+仕様なのに解釈を入れる必要があるのはどうなのと思いつつ、実はこの記事でこれから紹介するように、HTML仕様もなかなか曖昧に書かれており解釈が必要なのは仕方のないことです。
+
+筆者はどちらかというと空のdivを肯定する考えを持っていたので、独自にHTML仕様を解釈してみることにしました。
+この記事の目的は、上記の記事を批判することではなく色々な考え方・解釈をみなさんに見ていただくことです。あらかじめご承知おきください。
+
+この記事で参照するHTML仕様は[コミット33ff054a6caa014f4cce2912c93a19547a2e2717版](https://html.spec.whatwg.org/commit-snapshots/33ff054a6caa014f4cce2912c93a19547a2e2717/)です。
+
+## 余談: 空のdivのユースケースについて
+
+空のdiv要素と聞いて多くの人に想定されるのは次のようにスペーサーとして用いるもののようです。これに対しては「margin/padding使えよ」的な意見が散見されます。それはそうです。
+
+```html
+<div style="height: 100px"></div>
+```
+
+それよりも、筆者が空のdivを使いがちなのはこういうケースですね。flexboxなどにおいて文書の木構造がスタイリングに関わるのでこういう処置が必要になりがちです。下のケースでは`::before`と`::after`でも何とかなりますが、汎用性には劣ります。
+
+```html
+<div style="height: 100%; display: flex; flex-flow: column nowrap;">
+  <div style="flex-grow: 3;"></div>
+  <p>上下の余白が3:2になっている</p>
+  <div style="flex-grow: 2;"></div>
+</div>
+```
+
+## div要素は空でもいいのか——Content Modelからの考察
+
+「div要素は空でもいいのか」を答えをHTML仕様から見つけるためには、いくつかのルートが考えられます。その中の一つがContent Modelです。（この話題については冒頭で挙げた記事でも触れられているので、さっくりと進みます。）
+
+Content Modelは次のように定義されています。
+
+> A normative description of what content must be included as children and descendants of the element.
+>
+> https://html.spec.whatwg.org/multipage/dom.html#concept-element-content-model
+
+つまり、ある要素について、その要素にはcontent modelで定義された通りの子・子孫が含まれていなければならず、さもなくばHTML仕様に違反しているということです。
+
+div要素のcontent modelについては次のように定義されています。
+
+> If the element is a child of a dl element: one or more dt elements followed by one or more dd elements, optionally intermixed with script-supporting elements.
+> If the element is not a child of a dl element: flow content.
+>
+> https://html.spec.whatwg.org/multipage/grouping-content.html#the-div-element
+
+つまり、div要素がdl要素の子かどうかによってdiv要素のcontent modelが異なります。dlの子は特殊ケースなので、ここではそれ以外の場合を考えます。すると、div要素のcontent modelはflow contentであることが分かります。
+
+Flow contentの定義は次の通りです。
+
+> Most elements that are used in the body of documents and applications are categorized as flow content.
+>
+> a, abbr, address, area (if it is a descendant of a map element), article, aside, audio, b, bdi, bdo, blockquote, br, button, canvas, cite, code, data, datalist, del, details, dfn, dialog, div, dl, em, embed, fieldset, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, hr, i, iframe, img, input, ins, kbd, label, link (if it is allowed in the body), main (if it is a hierarchically correct main element), map, mark, MathML math, menu, meta (if the itemprop attribute is present), meter, nav, noscript, object, ol, output, p, picture, pre, progress, q, ruby, s, samp, script, section, select, slot, small, span, strong, sub, sup, SVG svg, table, template, textarea, time, u, ul, var, video, wbr, autonomous custom elements, text.
+
+要するに、当てはまるノードを列挙する形でflow contentが定義されています。例えば、`<div><b>...</b></div>`のようなものは、`b`がflow contentであるのでdivのContent Modelに適合していることが分かります。
+
+そうなると、ここで解釈に行き詰まります。div要素のcontent modelが「flow content」とありますが、これは結局どういう意味なのでしょうか。Flow contentの定義として“must be included”とありますが、これを文字通りに解釈するのであれば、flow contentが含まれてさえいれば残りは何でも良いということになります。これはおそらく正しい解釈ではないでしょう。
+
+Content modelの正しい解釈は、おそらく「content modelで許可されているもの以外を含んではならない」であると考えられます。そうでないと、例えばp要素のcontent modelが「phrasing content」と定義されていることと、p要素にはphrasing content以外を含んではいけないという広く知られた通念が矛盾してしまうからです。
+
+しかし、そう考えてもまだ“must be included”という言葉に曖昧性が残ります。具体的には、flow contentが最低一つは必要なのでしょうか。それとも、「0個以上」と考えて空でもよいのでしょうか。これは今回の問題に直結する問題です。これに関しては、仕様書の例から読み取ることができそうです。仕様書には、`<output></output>`、`<video></video>`、`<meter></meter>`、`<progress></progress>`、`<td></td>`といった中身の無い使用例が記述されており、これらは妥当なものであると考えられます。特に`td`はcontent modelがdivと全く同じ「flow content」であり、content modelが「flow content」である要素が中身が空であることが許されるという解釈を強く支持するものです。
+
+以上のことから、例からの類推になってしまうのがやや残念ではありますが、**content modelの観点からは、content modelが「flow content」の要素が空であることは妥当であると考えられます**。
+
+## div要素は空でもいいのか——Pulpable Contentsからの考察
+
+実は、Pulpable Contentsの定義において衝撃的なことが書かれています。
+
+> As a general rule, elements whose content model allows any flow content or phrasing content should have at least one node in its contents that is palpable content and that does not have the hidden attribute specified.
+>
+> https://html.spec.whatwg.org/multipage/dom.html#palpable-content
+
+「general rule」とはどういう概念なのかよく分からないものの、content modelがflow content（やphrasing content）である要素はコンテンツに最低一つのノードを持つべき（should）であるとされています。shouldとはいえ空のdiv要素が明確に否定されており、擁護できません。
+
+とはいえ、この「general rule」の例外が次のように書かれています。
+
+> This requirement is not a hard requirement, however, as there are many cases where an element can be empty legitimately, for example when it is used as a placeholder which will later be filled in by a script, or when the element is part of a template and would on most pages be filled in but on some pages is not relevant.
+
+これによれば、“an element can be empty legitimately”な場合、「つまり要素を空にする正当な理由がある場合」には空でも良いということになります。非常にでかい解釈ポイントです。これをどう解釈するのかによって空のdiv要素が妥当かそうでないか決まると言えます。
+
+冒頭で紹介した記事にも同じ考察が書かれており、曰く：
+
+> しかし、レイアウトや装飾目的で空 div や空 span を作っていいと、はっきり書かれていないゆえに、モヤモヤは晴れない。
+
+まったく同感です。
+
+筆者は空のdivを肯定する考えを持っていましたが、考え直してみればこのようにレイアウトや装飾目的でdivを使用することに肯定的だったということです。果たしてこのような使用は正当な理由なのでしょうか。
+
+その答えはこれをお読みの皆さんに委ねられるところですが、筆者としては**わりと正当なのではないか**と考えています。その理由は、この記事の序盤で説明した空のdivの使用例のような場合で、**CSSが特定の形の木構造を要求する場面がある**からです。
+
+## 空のdiv要素、無駄なdiv要素——セマンティクスの観点から
+
+divといえば、スタイリングのためだけにdivを積み重ねることもよく議論の対象になります。こういうやつですね。
+
+```html
+<div class="wrapper">
+  <div class="innerWrapper">
+    <div class="contents">
+      <div class="mainContents">
+        <p>Hello!</p>
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+これもスタイリングのためだけにdivを使っているという点で、この記事のテーマに少し似ています。筆者は、これに関しては明確に、**全く問題ないからどんどんdivを重ねていい**と思っています。
+
+ここでは、なぜdivを重ねても問題ないと思うのか説明します。これを通して、前セクションで問題となった「スタイリングの目的で空のdivを使うことの正当性」を補強できるのではないかと思います。
+
+そもそも、HTML文書で最も重要なことは正しい意味をユーザー（人に限らずクローラーとか支援技術とか）に伝えることです。そのため、スタイリングのために文書の意味を壊すのは本末転倒です。裏を返せば、divを重ねることや空のdivを配置することが文書の意味を壊さないのであれば、これらを正当化する理由になります。我々はスタイリングのために要素にclass属性を付けたりしますが、それらが文書の意味を壊すと思う人は見たことがありません。スタイリングのためにdivを増やしたり空のdivを置いたりすることもそれと同列に並べ、認められるはずです。
+
+ということで、この観点から考察するには文書の意味について調べる必要があります。HTML仕様では要素が何を**represent**するかということが定義されています。
+
+> Elements in the DOM **represent** things; that is, they have intrinsic _meaning_, also known as semantics.
+>
+> https://html.spec.whatwg.org/multipage/dom.html#represents
+
+すごく抽象的な定義ですが、実際representというのは抽象的な概念です。例えば、ol要素はordered listをrepresentすると定義されています。Ordered listというのはなかなか抽象的な概念ですね。
+
+> For example, an ol element represents an ordered list.
+
+では、div要素の意味を調べてみましょう。
+
+> The div element has no special meaning at all. It represents its children.
+>
+> https://html.spec.whatwg.org/multipage/grouping-content.html#the-div-element
+
+このように、div要素には特別な意味はなく、自身の子たちをrepresentするとされています。個人的には、「子たちをrepsenentする」という定義は厳密性の点で不満があります。文字通りに受け取ればdivの子とはDOMノードたちですが、文書の意味としてDOMノード自体を表すとは考えられません。これもまた解釈ですが、「子たちがrepresentするものをrepresentする」というのがより厳密な定義でしょう。
+
+つまるところ、div要素があっても無くても、（div要素にlang属性やtitle属性といった追加のセマンティクスが付与されていなければ）そのノードが表す意味は変わらないということです。以下の2つの構造は、HTML文書上での意味としては全く同じ意味を表すはずです。
+
+```html
+<div><p>無</p></div>
+
+<p>無</p>
+```
+
+これが、余計なdivをいくら積み上げてもよいという主張の支えるものです。divがいくらあろうが文書の意味は変わらないのです。
+
+ちなみに、HTML仕様書には以下のようなNoteも書かれています。
+
+> Authors are strongly encouraged to view the div element as an element of last resort, for when no other element is suitable. Use of more appropriate elements instead of the div element leads to better accessibility for readers and easier maintainability for authors.
+
+曰く、div要素は最後の手段であり、他の要素で代替可能ならばdiv要素では無くそちらを使うべきであるとしています。これは尤もな主張ですが、余計にdiv要素を使うことを否定していないという点に注意してください。適切な他の要素を使わないことは問題ですが、適切な要素をしっかりと使った上でさらにdivを重ねることは否定されません。
+
+では、本題に戻りましょう。`<div></div>`のような空のdiv要素を置くことはHTML文書にどんな意味を与えるのでしょうか。先ほど見たようにdiv要素は、自身の子たちをrepresentするとされています。今回divの子はありません。ということは、無は何をrepresentするのか考えなければいけないということです。
+
+無が何をrepresentするのかについては、残念ながらHTML仕様書に明確な記載が無いようです（そもそも複数のノードの並びが何をrepresentするのかについても記述がなく、これもまたrepresentの定義の曖昧性の一因です）。しかし、現実的な解釈としては、何も表さないと考える以外には無いように思われます。つまり、`<div></div>`というのはセマンティクスの観点からは何も無いのと同じであるということです。
+
+明示的に無をrepresentする（represents nothingと定義されている）ものはあります。例えばtemplate要素、iframe要素の子要素、`<img src="">`、サポートされていないリソースがsrc属性に指定されたembed要素、あるいはJavaScript有効時のnoscript要素などです。これらから類推するに、無をrepresentするものは文書の意味に影響を与えないと考えられます。
+
+そうすると、空のdiv要素についても文書の意味に影響を与えないと解釈するのが妥当なように思われます。
+
+そして、文書の意味に影響を与えないということは、逆に言えば文書の意味に影響を与えずに空のdivを置き放題ということです。これはちょうど、スクリプティングのためにいくら`template`要素を置いてもいいし、JavaScript有効のユーザーには全く影響を与えないものとしてnoscript要素を置きまくっても良いのと同じことです。
+
+長くなりましたが、以上のことから、**空のdiv要素を置いても文書の意味に悪影響を与えない**と筆者は考えています。
+
+これにより、スタイリングの目的で空のdiv要素を置くことがやや正当化され、前セクションの解釈を後押しします。
+
+## まとめ
+
+この記事では空のdiv要素が妥当かどうかということをHTML仕様の観点から探りました。
+
+「一般にflow contentやphrasing contentをcontent modelに持つ要素は空であるべきではない」と仕様に書かれている以上空であるのは良くないことだとは思われますが、場合によってはスタイリングのために空の要素を置くことは正当化されるかもしれないというのが筆者の意見です。
+
+この記事の後半では、この意見を補強するためにdiv要素の意味について考察し、空のdiv要素が文書の意味に悪影響を与えないとする解釈を紹介しました。
+
+
