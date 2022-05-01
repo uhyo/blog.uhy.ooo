@@ -6,7 +6,7 @@
  */
 
 import { graphql, useStaticQuery } from "gatsby"
-import Image from "gatsby-image"
+import { GatsbyImage, StaticImage } from "gatsby-plugin-image"
 import React from "react"
 import styled from "styled-components"
 import { rhythm, scale } from "../utils/typography"
@@ -18,9 +18,7 @@ const BioInner: React.FunctionComponent<{
     query BioQuery {
       avatar: file(absolutePath: { regex: "/avatar.png/" }) {
         childImageSharp {
-          fixed(width: 50, height: 50) {
-            ...GatsbyImageSharpFixed
-          }
+          gatsbyImageData(width: 50, height: 50, layout: FIXED)
         }
       }
       site {
@@ -46,13 +44,14 @@ const BioInner: React.FunctionComponent<{
         target="_blank"
         rel="external noopener"
       >
-        <Image
-          fixed={data.avatar.childImageSharp.fixed}
+        <StaticImage
+          src="../../content/assets/avatar.png"
           alt={author.name}
+          layout="fixed"
+          width={50}
           style={{
             marginRight: rhythm(1 / 2),
             marginBottom: 0,
-            minWidth: 50,
             borderRadius: `100%`,
           }}
           imgStyle={{
