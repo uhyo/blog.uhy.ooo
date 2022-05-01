@@ -1,6 +1,6 @@
 import React from "react"
 import { LoginButton1 } from "./LoginButton1"
-import styles from "./LoginButtons1.module.css"
+import * as styles from "./LoginButtons1.module.css"
 
 export const RedLoginButton1 = () => (
   <LoginButton1 className={styles.redButton} />

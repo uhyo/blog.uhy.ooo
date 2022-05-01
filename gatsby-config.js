@@ -18,7 +18,6 @@ module.exports = {
     repo: "https://github.com/uhyo/blog.uhy.ooo",
   },
   plugins: [
-    "gatsby-plugin-netlify-cache",
     {
       resolve: `gatsby-source-filesystem`,
       options: {
