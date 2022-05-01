@@ -6,7 +6,7 @@
  */
 
 import { graphql, useStaticQuery } from "gatsby"
-import { GatsbyImage, StaticImage } from "gatsby-plugin-image"
+import { StaticImage } from "gatsby-plugin-image"
 import React from "react"
 import styled from "styled-components"
 import { rhythm, scale } from "../utils/typography"
