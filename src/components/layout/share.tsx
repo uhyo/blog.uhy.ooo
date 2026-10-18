@@ -16,10 +16,10 @@ const ShareButtonsInner: React.FunctionComponent<Props> = ({
   url,
 }) => {
   const twitterHref = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-    text
+    text,
   )}&url=${encodeURIComponent(url)}`
   const hatenaHref = `https://b.hatena.ne.jp/entry?url=${encodeURIComponent(
-    url
+    url,
   )}`
   return (
     <div className={className}>

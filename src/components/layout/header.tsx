@@ -45,7 +45,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           href={author.url}
           target="_blank"
           rel="external noopener"
-          aria-label={`${author.name}のTwitter`}
+          aria-label={`${author.name}のウェブサイト`}
         >
           <FontAwesomeIcon icon="home" />
         </a>
@@ -61,7 +61,7 @@ const HeaderInner: React.FC<Props> = ({ title, className }) => {
           href={`https://twitter.com/${social.twitter}`}
           target="_blank"
           rel="external noopener"
-          aria-label={`${author.name}のウェブサイト`}
+          aria-label={`${author.name}のTwitter`}
         >
           <FontAwesomeIcon icon={["fab", "twitter"]} />
         </a>

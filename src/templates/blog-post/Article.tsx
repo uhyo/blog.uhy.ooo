@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { graphql, useStaticQuery } from "gatsby"
-import { MDXRenderer } from "gatsby-plugin-mdx"
 import React from "react"
 import styled from "styled-components"
 import { ArticleDate } from "../../components/ArticleDate"
@@ -13,28 +12,27 @@ import { rhythm, scale } from "../../utils/typography"
 type Props = {
   className?: string
   slug: string
-  post: Pick<
-    Mdx<"title" | "published" | "updated" | "tags">,
-    "frontmatter" | "body"
-  >
+  post: Pick<Mdx<"title" | "published" | "updated" | "tags">, "frontmatter">
+  /**
+   * Rendered MDX content
+   */
+  children?: React.ReactNode
 }
 
-const ArticleInner: React.FC<Props> = ({ className, post, slug }) => {
+const ArticleInner: React.FC<Props> = ({ className, post, slug, children }) => {
   const { site } = useStaticQuery<{
     site: {
       siteMetadata: Pick<SiteMetadata, "repo">
     }
-  }>(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            repo
-          }
+  }>(graphql`
+    query {
+      site {
+        siteMetadata {
+          repo
         }
       }
-    `
-  )
+    }
+  `)
 
   return (
     <article className={className}>
@@ -49,9 +47,7 @@ const ArticleInner: React.FC<Props> = ({ className, post, slug }) => {
           </div>
         ) : null}
       </header>
-      <main>
-        <MDXRenderer>{post.body}</MDXRenderer>
-      </main>
+      <main>{children}</main>
       <footer>
         <FontAwesomeIcon icon={["fab", "github"]} />
         <a

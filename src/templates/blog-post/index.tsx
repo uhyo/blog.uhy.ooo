@@ -1,4 +1,4 @@
-import { graphql } from "gatsby"
+import { graphql, HeadFC, PageProps } from "gatsby"
 import React from "react"
 import Layout from "../../components/layout"
 import SEO from "../../components/seo"
@@ -8,18 +8,20 @@ import { Nav } from "./Nav"
 import { TOC } from "./TOC"
 import Bio from "../../components/bio"
 
-type Props = {
-  data: {
-    mdx: Mdx<"title" | "published" | "updated" | "tags">
-  }
-  pageContext: {
-    slug: string
-    previous?: Pick<Mdx<"title">, "fields" | "frontmatter">
-    next?: Pick<Mdx<"title">, "fields" | "frontmatter">
-  }
+type DataType = {
+  mdx: Omit<Mdx<"title" | "published" | "updated" | "tags">, "body">
+}
+type PageContext = {
+  slug: string
+  previous: Pick<Mdx<"title">, "fields" | "frontmatter"> | null
+  next: Pick<Mdx<"title">, "fields" | "frontmatter"> | null
 }
 
-const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
+const BlogPostTemplate: React.FC<PageProps<DataType, PageContext>> = ({
+  data,
+  pageContext,
+  children,
+}) => {
   const post = data.mdx
   const { slug, previous, next } = pageContext
 
@@ -34,21 +36,25 @@ const BlogPostTemplate: React.FC<Props> = ({ data, pageContext }) => {
         </>
       }
     >
-      <SEO title={post.frontmatter.title} description={post.excerpt} />
-      <Article post={post} slug={post.fields.filePath} />
-      <Nav previous={previous} next={next} />
+      <Article post={post} slug={post.fields.filePath}>
+        {children}
+      </Article>
+      <Nav previous={previous ?? undefined} next={next ?? undefined} />
     </Layout>
   )
 }
 
 export default BlogPostTemplate
 
+export const Head: HeadFC<DataType, PageContext> = ({ data }) => (
+  <SEO title={data.mdx.frontmatter.title} description={data.mdx.excerpt} />
+)
+
 export const pageQuery = graphql`
   query BlogPostBySlug($slug: String!) {
     mdx(fields: { slug: { eq: $slug } }) {
       id
       excerpt(pruneLength: 160)
-      body
       tableOfContents
       frontmatter {
         title

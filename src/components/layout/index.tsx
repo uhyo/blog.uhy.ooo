@@ -105,7 +105,9 @@ const GlobalStyle = createGlobalStyle`
     top: -3px;
   }
 
-  .gatsby-code-title + .gatsby-highlight {
+  .gatsby-code-title + .gatsby-highlight,
+  /* gatsby-plugin-mdx wraps each of them with <span> */
+  :has(> .gatsby-code-title) + * > .gatsby-highlight {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     margin-top: 0;
@@ -133,7 +135,7 @@ const LayoutStyle = styled.div`
   }
   @media (min-width: ${rhythm(mainAreaWidth + sideBarWidth * 2)}) {
     grid-template-columns: ${rhythm(sideBarWidth)} ${rhythm(mainAreaWidth)} ${rhythm(
-        sideBarWidth
+        sideBarWidth,
       )};
     width: ${rhythm(mainAreaWidth + sideBarWidth * 2)};
   }
@@ -191,27 +193,26 @@ const LayoutStyle = styled.div`
 `
 
 type Props = {
-  rightSide?: JSX.Element
+  rightSide?: React.ReactNode
   title?: string
   slug?: string
+  children?: React.ReactNode
 }
 const Layout: React.FC<Props> = ({ rightSide, title, slug, children }) => {
   const { site } = useStaticQuery<{
     site: {
       siteMetadata: Pick<SiteMetadata, "title" | "siteUrl">
     }
-  }>(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-            siteUrl
-          }
+  }>(graphql`
+    query {
+      site {
+        siteMetadata {
+          title
+          siteUrl
         }
       }
-    `
-  )
+    }
+  `)
 
   const pageTitle = title
     ? `${title} - ${site.siteMetadata.title}`

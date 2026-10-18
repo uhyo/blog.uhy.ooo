@@ -872,7 +872,7 @@ new Super();
   >     - Perform ! AsyncFunctionStart(*promiseCapability*, *FunctionBody*).
   > 4. Else,
   >     - Perform ! Call(*promiseCapability*.[[Reject]], **undefined**, « *declResult*.[[Value]] »).
-  > 5. Return Completion { [[Type]]: return, [[Value]]: *promiseCapability*.[[Promise]], [[Target]]: empty }.
+  > 5. Return Completion \{ [[Type]]: return, [[Value]]: *promiseCapability*.[[Promise]], [[Target]]: empty }.
 
   呼ばれているのは*promiseCapability*.[[Reject]]です。この*promiseCapability*というのはステップ1のNewPromiseCapabilityで作成されています。これはPromiseCapability Record（[25.6.1.1 PromiseCapability Records](https://tc39.es/ecma262/#sec-promisecapability-records)）と呼ばれる概念であり、Promiseオブジェクトと、そのPromiseオブジェクトをresolveまたはrejectするための関数がセットになった仕様書内の概念です。
 
