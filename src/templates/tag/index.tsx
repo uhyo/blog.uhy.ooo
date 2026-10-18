@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { graphql } from "gatsby"
-import { MDXRenderer } from "gatsby-plugin-mdx"
+import { graphql, HeadFC, PageProps } from "gatsby"
 import React from "react"
 import {
   ArticleListItem,
@@ -10,41 +9,39 @@ import Layout from "../../components/layout"
 import SEO from "../../components/seo"
 import Bio from "../../components/bio"
 
-type Props = {
-  data: {
-    mdx: {
-      body: string
-    } | null
-    allMdx: {
-      edges: Array<{
-        node: ArticleListItemData
-      }>
-    }
-  }
-  pageContext: {
-    tag: string
-    slug: string
+type DataType = {
+  allMdx: {
+    edges: Array<{
+      node: ArticleListItemData
+    }>
   }
 }
+type PageContext = {
+  tag: string
+  slug: string
+}
 
-const TagPageTemplate: React.FC<Props> = ({ data, pageContext }) => {
-  const tagDescBody = data.mdx?.body
+/**
+ * `children` is the tag description from content/tag/*.mdx (if exists)
+ */
+const TagPageTemplate: React.FC<PageProps<DataType, PageContext>> = ({
+  data,
+  pageContext,
+  children,
+}) => {
   const posts = data.allMdx.edges
   const { tag, slug } = pageContext
 
   const title = `タグ: ${tag}`
   return (
     <Layout title={title} slug={slug} rightSide={<Bio />}>
-      <SEO title={title} />
       <h1>
         <FontAwesomeIcon icon="tags" aria-label="タグ" />
         {tag}
       </h1>
-      {tagDescBody && (
+      {children && (
         <>
-          <main>
-            <MDXRenderer>{tagDescBody}</MDXRenderer>
-          </main>
+          <main>{children}</main>
           <hr />
         </>
       )}
@@ -57,13 +54,14 @@ const TagPageTemplate: React.FC<Props> = ({ data, pageContext }) => {
 
 export default TagPageTemplate
 
+export const Head: HeadFC<DataType, PageContext> = ({ pageContext }) => (
+  <SEO title={`タグ: ${pageContext.tag}`} />
+)
+
 export const pageQuery = graphql`
-  query($tag: String, $slug: String) {
-    mdx(fields: { slug: { eq: $slug } }) {
-      body
-    }
+  query ($tag: String) {
     allMdx(
-      sort: { fields: [frontmatter___published], order: DESC }
+      sort: { frontmatter: { published: DESC } }
       filter: {
         frontmatter: { tags: { in: [$tag] } }
         fields: { sourceFileType: { eq: "blog" } }

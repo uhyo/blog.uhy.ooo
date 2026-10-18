@@ -1,6 +1,30 @@
+import { dirname } from "path"
+import remarkGfm from "remark-gfm"
+import { fileURLToPath } from "url"
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
 const siteTitle = "uhyo/blog"
 
-module.exports = {
+/**
+ * Adds the class that gatsby-remark-prismjs used to give to inline code.
+ * Inline code is not processed by gatsby-remark-prismjs (`noInlineHighlight`)
+ * because its raw HTML output is invisible to excerpts in gatsby-plugin-mdx v5.
+ */
+const remarkInlineCodeClass = () => tree => {
+  const walk = node => {
+    if (node.type === "inlineCode") {
+      node.data = {
+        ...node.data,
+        hProperties: { className: ["language-text"] },
+      }
+    }
+    node.children?.forEach(walk)
+  }
+  walk(tree)
+}
+
+const config = {
   siteMetadata: {
     title: siteTitle,
     author: {
@@ -43,6 +67,10 @@ module.exports = {
       // remark for blog posts
       resolve: `gatsby-plugin-mdx`,
       options: {
+        mdxOptions: {
+          // GFM (tables, footnotes, etc.) was built into MDX v1
+          remarkPlugins: [remarkGfm, remarkInlineCodeClass],
+        },
         gatsbyRemarkPlugins: [
           {
             resolve: "gatsby-remark-prismjs-title",
@@ -66,17 +94,16 @@ module.exports = {
             resolve: `gatsby-remark-prismjs`,
             options: {
               showLineNumbers: true,
+              noInlineHighlight: true,
             },
           },
           `gatsby-remark-copy-linked-files`,
-          // `gatsby-remark-smartypants`,
           {
             resolve: "gatsby-remark-external-links",
             options: {
               rel: "external noopener",
             },
           },
-          "gatsby-remark-numbered-footnotes",
         ],
       },
     },
@@ -120,7 +147,8 @@ module.exports = {
             query: `
               {
                 allMdx(
-                  sort: { order: DESC, fields: [frontmatter___published] },
+                  sort: { frontmatter: { published: DESC } }
+                  filter: { fields: { sourceFileType: { eq: "blog" } } }
                 ) {
                   edges {
                     node {
@@ -154,17 +182,11 @@ module.exports = {
         icon: `content/assets/blog-logo.png`,
       },
     },
-    `gatsby-plugin-react-helmet`,
-    {
-      resolve: `gatsby-plugin-typography`,
-      options: {
-        pathToConfigModule: `src/utils/typography`,
-      },
-    },
     "gatsby-plugin-styled-components",
-    "gatsby-plugin-typescript",
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,
   ],
 }
+
+export default config

@@ -30,6 +30,7 @@ if (process.env.NODE_ENV !== `production`) {
 export default typography
 export const rhythm = typography.rhythm
 // Workaround for type/interface difference
-export const scale = typography.scale as (
-  value: number
-) => { fontSize: string; lineHeight: string }
+export const scale = typography.scale as (value: number) => {
+  fontSize: string
+  lineHeight: string
+}
